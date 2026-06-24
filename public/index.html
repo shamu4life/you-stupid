@@ -11,10 +11,13 @@
 html,body{width:100%;height:100%;overflow:hidden;background:#fff;font-family:"Times New Roman",serif;cursor:default;}
 .idiot{position:absolute;top:0;left:0;width:100%;height:100%;display:none;justify-content:center;align-items:center;}
 .idiot.live{display:flex;}
-.idiot>img{position:fixed;top:50%;left:50%;width:auto;height:auto;max-width:88vw;max-height:88vh;transform:translate(-50%,-50%);image-rendering:pixelated;-webkit-user-select:none;user-select:none;}
-.idiot>img.inv{filter:invert(1);}
+.flash{position:absolute;inset:0;background:#fff;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5vh;animation:flashinv 666ms step-end infinite;}
+@keyframes flashinv{0%{filter:invert(0)}50%{filter:invert(1)}100%{filter:invert(0)}}
+.yai{font-family:"Times New Roman",Times,serif;color:#000;font-size:10vw;line-height:1;white-space:nowrap;}
+.faces{display:flex;gap:7vw;align-items:center;}
+.faces img{width:13vw;max-width:150px;height:auto;-webkit-user-select:none;user-select:none;}
 .sp{position:absolute;left:0;top:0;will-change:transform;}
-.sp>.fb,.sp>.fw{position:absolute;inset:0;background:center/contain no-repeat;background-image:url("/images/emote.png");image-rendering:pixelated;}
+.sp>.fb,.sp>.fw{position:absolute;inset:0;background:center/contain no-repeat;background-image:url("/images/emote.png");}
 .sp>.fw{filter:invert(1);}
 @keyframes key-black{from,to{visibility:visible}50%{visibility:hidden}}
 @keyframes key-white{from,to{visibility:hidden}50%{visibility:visible}}
@@ -75,8 +78,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:#fff;font-family:"Ti
   </div>
 </div>
 
-<main class="idiot" id="youare-container"><img class="frame-black" src="/images/emote.png" alt=""><img class="frame-white inv" src="/images/emote.png" alt=""></main>
-<audio id="snd" src="/media/youare.mp3" loop playsinline></audio>
+<main class="idiot" id="youare-container"><div class="flash"><div class="yai">you are an idiot</div><div class="faces"><img src="/images/emote.png" alt=""><img src="/images/emote.png" alt=""><img src="/images/emote.png" alt=""></div></div></main>
+<audio id="snd" src="/media/voice1.mp3" loop playsinline></audio>
 <script>
 (function(){
   var snd = document.getElementById("snd");
@@ -109,19 +112,27 @@ html,body{width:100%;height:100%;overflow:hidden;background:#fff;font-family:"Ti
     actx=new AC();
     master=actx.createDynamicsCompressor();
     master.connect(actx.destination);
-    fetch("/media/youare.mp3").then(function(r){ return r.arrayBuffer(); })
-      .then(function(ab){ return actx.decodeAudioData(ab); })
-      .then(function(buf){
-        abuf=buf;
-        var ch=buf.getChannelData(0), thr=0.008, n=ch.length, s=0, e=n-1;
-        while(s<n && Math.abs(ch[s])<thr) s++;
-        while(e>s && Math.abs(ch[e])<thr) e--;
-        lpS=Math.max(0, s/buf.sampleRate - 0.01);
-        lpE=Math.min(buf.duration, e/buf.sampleRate + 0.01);
-        if(lpE<=lpS){ lpS=0; lpE=buf.duration; }
-        ready=true; pump();
-      })
-      .catch(function(){ try{ snd.loop=true; snd.play(); }catch(e){} });
+    function load(u){ return fetch(u).then(function(r){ return r.arrayBuffer(); }).then(function(ab){ return actx.decodeAudioData(ab); }); }
+    function mono(buf){                 // downmix to mono + trim silence
+      var n=buf.length, ch=buf.numberOfChannels, d=new Float32Array(n), c, i, cd;
+      for(c=0;c<ch;c++){ cd=buf.getChannelData(c); for(i=0;i<n;i++) d[i]+=cd[i]/ch; }
+      var thr=0.006, s=0, e=n-1;
+      while(s<n && Math.abs(d[s])<thr) s++;
+      while(e>s && Math.abs(d[e])<thr) e--;
+      if(e<=s){ s=0; e=n-1; }
+      return d.subarray(s, e+1);
+    }
+    // Build ONE looping buffer of [voice1][gap][voice2][gap] -> the two voices
+    // alternate forever; stacked voices start at random phase for the cacophony.
+    Promise.all([load("/media/voice1.mp3"), load("/media/voice2.mp3")]).then(function(bufs){
+      var a=mono(bufs[0]), b=mono(bufs[1]);
+      var gap=Math.round(actx.sampleRate*0.12);
+      abuf=actx.createBuffer(1, a.length+gap+b.length+gap, actx.sampleRate);
+      var out=abuf.getChannelData(0);
+      out.set(a, 0); out.set(b, a.length+gap);
+      lpS=0; lpE=abuf.duration;
+      ready=true; pump();
+    }).catch(function(){ try{ snd.loop=true; snd.play(); }catch(e){} });
   }
   function startVoice(){
     var src=actx.createBufferSource();
