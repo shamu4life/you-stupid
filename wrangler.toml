@@ -3,6 +3,11 @@ main = "src/index.js"
 compatibility_date = "2025-09-01"
 workers_dev = true
 
+# Serve the real site files (page, css, js, the mp3, icons) as static assets.
+[assets]
+directory = "./public"
+binding = "ASSETS"
+
 [observability]
 enabled = true
 

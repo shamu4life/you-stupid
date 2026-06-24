@@ -1,90 +1,80 @@
 # YOU ARE AN IDIOT — on a Cloudflare Worker
 
-A self-contained recreation of the classic [youareanidiot.cc](https://en.wikipedia.org/wiki/You_Are_an_Idiot)
-prank page, served entirely from a single Cloudflare Worker.
+A faithful copy of the real [youareanidiot.cc](https://youareanidiot.cc) (the
+modern HTML5 port of the legendary prank page), served from a single Cloudflare
+Worker — with two extras wired in:
 
-It does three extra things on top of the original look:
+1. **Runs on a Cloudflare Worker** — the real site files are served out of
+   `./public` via [Workers Static Assets](https://developers.cloudflare.com/workers/static-assets/).
+2. **Auto-fullscreen** — it enters fullscreen on the first interaction.
+3. **Audio on first interaction** — the real "you are an idiot" song starts as
+   soon as you touch the page.
 
-1. **Runs on a Cloudflare Worker** — the whole page (HTML, CSS, JS, the dancing
-   face SVG, and a synthesized soundtrack) is inlined in `src/index.js`. There
-   are no external assets to host, so the Worker is the only thing you deploy.
-2. **Auto-fullscreen** — it jumps into fullscreen on the first interaction.
-3. **Multiplying popups** — every click opens *another* popup window pointing
-   back at the same page, so the windows breed. Each popup also bounces around
-   the screen, exactly like the original.
+The signature **click → spawn more popup windows** and **bouncing windows**
+behavior is part of the original site and is preserved as-is.
 
 > ⚠️ This is an obnoxious prank toy. Only point people at it as a joke, and only
-> deploy it somewhere you're allowed to. The popups multiply on every click.
+> deploy it somewhere you're allowed to. Clicking spawns 6 popups each time.
 
-## What's in the box
+## What's authentic vs. added
+
+**Authentic (from the real site, unchanged):**
+- `public/index.html` — the real page, including the genuine **two-frame
+  dancing SVG** (`.frame-black` / `.frame-white` alternate at 666 ms to animate).
+- `public/media/youare.mp3` — the **real 320 kbps "you are an idiot" loop**.
+- `public/styles/styles.css`, `public/scripts/{safe,math,you,cleanup}.js` — the
+  original CSS + JS: audio with self-overlap "for historic accuracy", the
+  `procreate()` popup spawner, and `playBall()` window bouncing.
+
+**Added for this build:**
+- `public/scripts/fullscreen.js` — auto-fullscreen + audio kick on first gesture.
+- `public/favicon.svg`, `public/images/speaker.svg`, `public/images/speakerm.svg`
+  — replacements for the original `.avif` icons (not in the source pull).
+- `src/index.js` — the Worker that serves the assets and falls back to the idiot
+  page for any unknown route (so popups/links always resolve).
+- The Cloudflare analytics beacon was removed from the page.
+
+## Project layout
 
 ```
-src/index.js     The entire Worker + page (self-contained, no external assets)
-wrangler.toml    Cloudflare Worker config
-package.json     dev / deploy scripts (uses Wrangler)
+src/index.js          Worker (static-asset router)
+wrangler.toml         Worker config (points [assets] at ./public)
+public/               the actual website that gets served
+  index.html, lol.html
+  styles/styles.css
+  scripts/safe.js, math.js, you.js, cleanup.js, fullscreen.js
+  media/youare.mp3
+  images/..., favicon.svg
 ```
 
 ## Run it locally
 
 ```bash
 npm install
-npm run dev
+npm run dev        # http://localhost:8787
 ```
 
-Wrangler prints a local URL (usually `http://localhost:8787`). Open it, click,
-and enjoy the chaos.
-
 ## Deploy it
-
-You need a (free) Cloudflare account.
 
 ```bash
 npm install
 npx wrangler login     # one-time browser auth
-npm run deploy
+npm run deploy         # -> https://you-stupid.<your-subdomain>.workers.dev
 ```
 
-Wrangler publishes it to `https://you-stupid.<your-subdomain>.workers.dev`.
-The Worker name comes from `name` in `wrangler.toml` (set to `you-stupid` to
-match the connected Cloudflare project); change it there to rename the Worker.
+The Worker name comes from `name` in `wrangler.toml` (`you-stupid`, to match the
+connected Cloudflare project). This repo is also wired to Cloudflare's Git
+integration, so pushes deploy automatically.
 
-### Custom domain (optional)
+## Browser-behavior notes (why fullscreen/audio need a touch)
 
-Add your domain as a zone in the Cloudflare dashboard, then uncomment the
-`routes` block in `wrangler.toml` and set the hostname:
+Every modern browser blocks fullscreen and audio-with-sound until the user
+interacts — there is no way around this from a normal web page (the original
+1990s/2000s version worked because old browsers allowed it). So this build does
+the next best thing: the **first** pointer/key/touch event triggers fullscreen
+and starts the song. True zero-interaction autoplay/fullscreen is only possible
+in kiosk setups (e.g. Chrome launched with `--kiosk`).
 
-```toml
-routes = [
-  { pattern = "youareanidiot.example.com", custom_domain = true }
-]
-```
-
-Re-run `npm run deploy`.
-
-## Browser-behavior notes (why these are unavoidable)
-
-The web platform won't let a page do any of this without a user gesture — there
-is no way around that from inside a normal web page, so the page is wired to
-trigger everything on the **first click/keypress/tap**:
-
-- **Fullscreen** requires a user gesture. The page requests it the instant you
-  interact (hence the "click anywhere" hint). True zero-interaction fullscreen
-  is only possible in kiosk setups (e.g. Chrome started with `--kiosk`).
-- **Audio** is autoplay-blocked until you interact, so the soundtrack starts on
-  the same first gesture. It's synthesized live with the Web Audio API — no
-  copyrighted audio files involved.
-- **Popups** are blocked unless opened from a user gesture, which is why a new
-  window opens *per click*. If your browser's popup blocker is strict it may
-  still cap or block them.
-- **Moving windows** (`window.moveTo`) only works for script-opened popups, so
-  the bouncing applies to the popups, not the main tab.
-
-## How it works
-
-`src/index.js` exports a standard Worker `fetch` handler:
-
-- `GET /favicon.svg` (and `/favicon.ico`) → the grinning-face SVG.
-- Any other path → the full inlined prank page.
-
-Serving every path means popups can target any URL and still get the page,
-keeping the cascade going.
+Popups are likewise only allowed from a user gesture, and `window.moveTo` only
+works on script-opened windows — so the bouncing applies to the spawned popups.
+Strict popup blockers may cap how many windows open.
