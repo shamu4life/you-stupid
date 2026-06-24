@@ -1,0 +1,14 @@
+{
+  "name": "you-are-an-idiot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A self-contained recreation of youareanidiot.cc running on a Cloudflare Worker — auto fullscreen + multiplying popup windows.",
+  "scripts": {
+    "dev": "wrangler dev",
+    "start": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.104.0"
+  }
+}

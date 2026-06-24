@@ -1,0 +1,13 @@
+name = "you-are-an-idiot"
+main = "src/index.js"
+compatibility_date = "2025-09-01"
+workers_dev = true
+
+[observability]
+enabled = true
+
+# Optional: serve it from your own domain instead of *.workers.dev.
+# Add the zone in the Cloudflare dashboard first, then uncomment:
+# routes = [
+#   { pattern = "youareanidiot.example.com", custom_domain = true }
+# ]
