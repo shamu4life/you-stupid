@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-label="YOU ARE AN IDIOT">
+  <defs>
+    <radialGradient id="g" cx="50%" cy="38%" r="75%">
+      <stop offset="0%" stop-color="#15244a"/>
+      <stop offset="100%" stop-color="#0b1020"/>
+    </radialGradient>
+  </defs>
+  <rect width="1280" height="640" fill="url(#g)"/>
+  <!-- dancing smiley -->
+  <g transform="translate(640,262)">
+    <circle r="132" fill="#ffe000" stroke="#000" stroke-width="11"/>
+    <circle cx="-48" cy="-30" r="18" fill="#000"/>
+    <circle cx="48" cy="-30" r="18" fill="#000"/>
+    <path d="M-66 32 Q0 108 66 32" fill="none" stroke="#000" stroke-width="14" stroke-linecap="round"/>
+  </g>
+  <text x="640" y="520" text-anchor="middle" font-family="Impact, 'Arial Black', sans-serif" font-size="112" font-weight="900" fill="#ffe000" stroke="#000" stroke-width="3" letter-spacing="3">YOU ARE AN IDIOT!</text>
+</svg>
