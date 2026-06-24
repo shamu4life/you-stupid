@@ -5,8 +5,6 @@
 
 [![Cloudflare Workers](https://img.shields.io/badge/Deployed_on-Cloudflare_Workers-f38020?logo=cloudflare&logoColor=white)](https://workers.cloudflare.com)
 [![Zero dependencies](https://img.shields.io/badge/dependencies-0-22c55e.svg)]()
-[![No build step](https://img.shields.io/badge/build-none-success.svg)]()
-[![Static assets](https://img.shields.io/badge/served_from-Workers_Static_Assets-f38020.svg)](https://developers.cloudflare.com/workers/static-assets/)
 [![Maturity](https://img.shields.io/badge/maturity-deeply_unserious-ff2d2d.svg)]()
 
 </div>
