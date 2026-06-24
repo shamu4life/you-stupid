@@ -13,7 +13,7 @@
 
 <p align="center"><strong>A faithful recreation of the infamous <a href="https://en.wikipedia.org/wiki/You_Are_an_Idiot">youareanidiot.cc</a> prank — wrapped in a fake "FBI domain seized" page — on a single Cloudflare Worker.</strong></p>
 
-It opens as a convincing **"This Website Has Been Seized"** notice, complete with the FBI/DOJ seals and the visitor's **real IP, location, and ISP** under a "all connecting IP addresses are tracked" warning. The instant they click **Return to Safety**, it detonates into the classic: dancing smiley, the real song looping, and a swarm of self-spawning popup windows.
+It opens as a convincing **"This Website Has Been Seized"** notice, complete with the FBI/DOJ seals and the visitor's **real IP, location, and ISP** under a "all connecting IP addresses are tracked" warning. The instant they interact at all — click, tap, or press any key — it detonates into the classic: dancing smiley, the real song looping, and a swarm of self-spawning popup windows.
 
 > ⚠️ This is an obnoxious prank toy. Deploy it somewhere you're allowed to, and point it only at people who'll forgive you.
 
@@ -22,8 +22,8 @@ It opens as a convincing **"This Website Has Been Seized"** notice, complete wit
 ## What happens
 
 1. **The bait.** A serious-looking federal seizure page (real seals over a dark backdrop) reads back the visitor's actual `IP · city, region, country · ISP` — pulled live from Cloudflare — with a blinking "connection logged & monitored" line, a timestamp, and a case number. It behaves like a normal page: no sound, no funny business, nothing leaks.
-2. **The detonation.** Click **Return to Safety** (or anywhere): the tab title flips to **YOU ARE AN IDIOT!**, the favicon swaps from the FBI seal to a grinning smiley, the song kicks in, and the two-frame dancing figure takes over the screen.
-3. **The chaos.** Every click spawns popup windows that bounce erratically around the screen; clicking *those* spawns more and stacks another out-of-phase copy of the song, building into a proper wall of noise.
+2. **The detonation.** Any gesture — click **Return to Safety**, tap, or press any key: the tab title flips to **YOU ARE AN IDIOT!**, the favicon swaps from the FBI seal to a grinning smiley, the song kicks in, and the two-frame dancing figure takes over the screen.
+3. **The chaos.** Every gesture spawns popup windows that bounce erratically around the screen; interacting with *those* spawns more and stacks another out-of-phase copy of the song, building into a proper wall of noise.
 
 ---
 
@@ -31,7 +31,7 @@ It opens as a convincing **"This Website Has Been Seized"** notice, complete wit
 
 A.k.a. things browsers no longer let a prank do — none of these are bugs, they're the modern web:
 
-- **No zero-click autoplay or fullscreen.** Sound and fullscreen legally require a user gesture, so everything starts on that first click. (The original got away with it in the Flash era.)
+- **Nothing starts with zero interaction.** Sound (and fullscreen) legally require a user gesture, so everything waits for the first one — but *any* gesture counts: a click, a tap, or a single keypress (even Alt to alt-tab away). A pure glance-and-close-the-tab escapes, and there's no way around that. (The original got away with autoplay in the Flash era.)
 - **The popup blocker caps the swarm.** Chrome/Edge open ~1 popup per click unless the visitor allows pop-ups for the site; Firefox opens several. The code asks for more — the browser decides.
 - **Audio lives in the windows you've clicked.** A freshly-spawned popup can't autoplay, so each window starts its own voice only once *it* is clicked.
 - **The close prompt is generic.** Browsers hardcode the "Leave site?" text and ignore custom messages, so it can't say "Are you an idiot?".

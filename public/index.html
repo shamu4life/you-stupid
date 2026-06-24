@@ -870,14 +870,25 @@ html,body{width:100%;height:100%;overflow:hidden;background:#fff;font-family:"Ti
     setTimeout(playBall,16);
   }
 
+  // What ANY real user gesture does (pointer press, tap, or key press) in any
+  // window. The first one on the main page reveals the idiot site + starts 2
+  // voices; each one after stacks another voice and spawns more popups.
+  function activate(e){
+    if(e && e.type==="keydown" && e.repeat) return;        // ignore held-key auto-repeat
+    if(isPopup){ addVoices(1); proCreate(3); return; }
+    var first = seized && !seized.classList.contains("seized-hidden");
+    if(first){ seized.classList.add("seized-hidden"); becomeIdiot(); }
+    addVoices(first ? 2 : 1);
+    proCreate(6);
+  }
+
   if(isPopup){
-    // Popups skip the seizure screen: straight to silent dancing + bouncing.
+    // Popups skip the seizure screen: straight to dancing + bouncing.
     if(seized && seized.parentNode) seized.parentNode.removeChild(seized);
     becomeIdiot();
     window.addEventListener("load", playBall);
-    // Clicking a popup spawns another popup AND starts an audio voice in it.
-    document.addEventListener("click", function(){ addVoices(1); proCreate(3); });
   } else {
+    // Main page: fill the seizure notice with the visitor's REAL info.
     fetch("/whoami").then(function(r){ return r.json(); }).then(function(d){
       var ip=document.getElementById("s-ip"); if(ip) ip.textContent=d.ip||"(unavailable)";
       var loc=document.getElementById("s-loc");
@@ -888,26 +899,23 @@ html,body{width:100%;height:100%;overflow:hidden;background:#fff;font-family:"Ti
       var loc=document.getElementById("s-loc"); if(loc) loc.textContent="(your location)";
       var isp=document.getElementById("s-isp"); if(isp) isp.textContent="(your provider)";
     });
-
-    // First (reveal) click starts 2 voices (the main + the popup it opens); every
-    // click after stacks one more voice and spawns more popups.
-    document.addEventListener("click", function(e){
-      var first = seized && !seized.classList.contains("seized-hidden");
-      if(first){ e.preventDefault(); seized.classList.add("seized-hidden"); becomeIdiot(); }
-      addVoices(first ? 2 : 1);
-      proCreate(6);
-    });
   }
 
-  // Warn on close EVERYWHERE, including the seizure screen -- the browser shows
-  // its own generic "Leave site?" text, so this gives the prank away to nobody.
+  // ANY first gesture detonates it -- pointer press, tap, OR key press (not just a
+  // click). preventDefault on clicks stops the seizure-page links from navigating.
+  window.addEventListener("pointerdown", activate, true);
+  window.addEventListener("keydown", activate, true);
+  document.addEventListener("click", function(e){ e.preventDefault(); }, true);
+
+  // Warn on close EVERYWHERE -- the browser shows its own generic "Leave site?"
+  // text, so this gives the prank away to nobody.
   window.onbeforeunload=function(){ return "Are you an idiot?"; };
   // These two DO give the game away, so keep them gated until the reveal.
   window.oncontextmenu=function(){ if(idiotMode) return false; };
   window.onkeydown=function(e){
     if(!idiotMode) return;
     var k=(e||window.event).key;
-    if(["Control","Alt","Delete","F4"].indexOf(k)>=0){ addVoices(1); proCreate(isPopup?3:6); alert("You are an idiot!"); }
+    if(["Control","Alt","Delete","F4"].indexOf(k)>=0){ alert("You are an idiot!"); }
     return null;
   };
 })();

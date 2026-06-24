@@ -1,19 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-label="YOU ARE AN IDIOT — a youareanidiot.cc recreation on a Cloudflare Worker">
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-label="YOU ARE AN IDIOT">
   <defs>
-    <radialGradient id="g" cx="50%" cy="32%" r="75%">
+    <radialGradient id="g" cx="50%" cy="38%" r="75%">
       <stop offset="0%" stop-color="#15244a"/>
       <stop offset="100%" stop-color="#0b1020"/>
     </radialGradient>
   </defs>
   <rect width="1280" height="640" fill="url(#g)"/>
   <!-- dancing smiley -->
-  <g transform="translate(640,212)">
-    <circle r="128" fill="#ffe000" stroke="#000" stroke-width="11"/>
-    <circle cx="-46" cy="-28" r="17" fill="#000"/>
-    <circle cx="46" cy="-28" r="17" fill="#000"/>
-    <path d="M-64 30 Q0 104 64 30" fill="none" stroke="#000" stroke-width="13" stroke-linecap="round"/>
+  <g transform="translate(640,262)">
+    <circle r="132" fill="#ffe000" stroke="#000" stroke-width="11"/>
+    <circle cx="-48" cy="-30" r="18" fill="#000"/>
+    <circle cx="48" cy="-30" r="18" fill="#000"/>
+    <path d="M-66 32 Q0 108 66 32" fill="none" stroke="#000" stroke-width="14" stroke-linecap="round"/>
   </g>
-  <text x="640" y="458" text-anchor="middle" font-family="Impact, 'Arial Black', sans-serif" font-size="104" font-weight="900" fill="#ffe000" stroke="#000" stroke-width="3" letter-spacing="3">YOU ARE AN IDIOT!</text>
-  <text x="640" y="520" text-anchor="middle" font-family="system-ui, 'Segoe UI', Arial, sans-serif" font-size="31" fill="#cbd5e1">a youareanidiot.cc recreation — on a single Cloudflare Worker</text>
-  <text x="640" y="566" text-anchor="middle" font-family="'Courier New', monospace" font-size="20" fill="#56d364">$ npx wrangler deploy</text>
+  <text x="640" y="520" text-anchor="middle" font-family="Impact, 'Arial Black', sans-serif" font-size="112" font-weight="900" fill="#ffe000" stroke="#000" stroke-width="3" letter-spacing="3">YOU ARE AN IDIOT!</text>
 </svg>
