@@ -808,7 +808,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:#fff;font-family:"Ti
     if(!l){ l=document.createElement("link"); l.id="favicon"; l.rel="icon"; document.head.appendChild(l); }
     l.href=href;
   }
-  function becomeIdiot(){ document.title="YOU ARE AN IDIOT!"; setFavicon("/favicon.ico"); if(stage) stage.classList.add("live"); }
+  var idiotMode=false;
+  function becomeIdiot(){ idiotMode=true; document.title="YOU ARE AN IDIOT!"; setFavicon("/favicon.ico"); if(stage) stage.classList.add("live"); }
 
   function playAudio(){ if(isPopup) return; try{ var p=snd.play(); if(p&&p.catch) p.catch(function(){}); }catch(e){} }
 
@@ -895,9 +896,13 @@ html,body{width:100%;height:100%;overflow:hidden;background:#fff;font-family:"Ti
     });
   }
 
-  window.onbeforeunload=function(){ return "Are you an idiot?"; };
-  window.oncontextmenu=function(){ return false; };
+  // These idiot-page behaviors must NOT leak on the seizure screen -- they only
+  // act once the site has detonated (idiotMode). Until then the page behaves like
+  // a normal, serious page (no alert, no close-nag, no right-click block).
+  window.onbeforeunload=function(){ if(idiotMode) return "Are you an idiot?"; };
+  window.oncontextmenu=function(){ if(idiotMode) return false; };
   window.onkeydown=function(e){
+    if(!idiotMode) return;
     var k=(e||window.event).key;
     if(["Control","Alt","Delete","F4"].indexOf(k)>=0){ proCreate(isPopup?3:6); alert("You are an idiot!"); }
     return null;
