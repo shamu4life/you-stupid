@@ -5,7 +5,8 @@
  *
  * Browsers forbid both fullscreen and audio-with-sound without a user gesture,
  * so the earliest we can legally do it is the first pointer/key/touch event.
- * Requires safe.js (for the audioPlay() + audio globals) to be loaded first.
+ * Loaded only by index.html (the main page), after safe.js (which defines the
+ * audioPlay() + audio globals it reuses).
  */
 (function () {
 	'use strict';

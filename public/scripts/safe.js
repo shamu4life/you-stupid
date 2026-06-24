@@ -24,7 +24,7 @@ function audioPlay() {
 	ovlap.addEventListener('timeupdate', audioOverlap);
 	
 	container.classList.remove('clicky');
-	micon.src = "/images/speaker.svg";
+	micon.src = "/images/speaker.avif";
 }
 
 function audioStop() {
@@ -40,7 +40,7 @@ function audioStop() {
 	ovlap.removeEventListener('timeupdate', audioOverlap);
 	
 	container.classList.add('clicky');
-	micon.src = "/images/speakerm.svg";
+	micon.src = "/images/speakerm.avif";
 }
 
 function audioSwitch() {	

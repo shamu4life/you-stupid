@@ -14,25 +14,31 @@ The signature **click → spawn more popup windows** and **bouncing windows**
 behavior is part of the original site and is preserved as-is.
 
 > ⚠️ This is an obnoxious prank toy. Only point people at it as a joke, and only
-> deploy it somewhere you're allowed to. Clicking spawns 6 popups each time.
+> deploy it somewhere you're allowed to. Clicking the main page spawns 6 popups;
+> each popup spawns 3 more.
 
 ## What's authentic vs. added
 
 **Authentic (from the real site, unchanged):**
-- `public/index.html` — the real page, including the genuine **two-frame
+- `public/index.html` — the real main page, including the genuine **two-frame
   dancing SVG** (`.frame-black` / `.frame-white` alternate at 666 ms to animate).
+- `public/lol.html` + `public/scripts/lol.js` — the real **popup** page. It loads
+  only `math.js` + `lol.js`, so popups are **silent**, bounce around the screen,
+  and spawn 3 more on click (only the main page plays sound).
+- `public/safe.html`, `public/updates.html` — the real `/safe` and `/updates`
+  pages linked from the UI.
 - `public/media/youare.mp3` — the **real 320 kbps "you are an idiot" loop**.
-- `public/styles/styles.css`, `public/scripts/{safe,math,you,cleanup}.js` — the
-  original CSS + JS: audio with self-overlap "for historic accuracy", the
+- `public/styles/*.css`, `public/scripts/{safe,math,you,cleanup}.js`, the real
+  `.avif` icons, `favicon.ico`, and `images/idiot.png` — all straight from the
+  live site. Original JS: audio with self-overlap "for historic accuracy", the
   `procreate()` popup spawner, and `playBall()` window bouncing.
 
-**Added for this build:**
-- `public/scripts/fullscreen.js` — auto-fullscreen + audio kick on first gesture.
-- `public/favicon.svg`, `public/images/speaker.svg`, `public/images/speakerm.svg`
-  — replacements for the original `.avif` icons (not in the source pull).
-- `src/index.js` — the Worker that serves the assets and falls back to the idiot
-  page for any unknown route (so popups/links always resolve).
-- The Cloudflare analytics beacon was removed from the page.
+**Added / changed for this build:**
+- `public/scripts/fullscreen.js` — auto-fullscreen + audio start on the first
+  gesture (loaded by the main page only).
+- `src/index.js` — the Worker that serves the assets and falls back to the main
+  page for any unknown route (so stray links/typos still resolve).
+- Removed the Cloudflare analytics beacon and the `/cdn-cgi` email-decode script.
 
 ## Project layout
 
@@ -40,11 +46,14 @@ behavior is part of the original site and is preserved as-is.
 src/index.js          Worker (static-asset router)
 wrangler.toml         Worker config (points [assets] at ./public)
 public/               the actual website that gets served
-  index.html, lol.html
-  styles/styles.css
-  scripts/safe.js, math.js, you.js, cleanup.js, fullscreen.js
+  index.html          main page (sound + auto-fullscreen, spawns 6 popups)
+  lol.html            popup page (silent, bounces, spawns 3)
+  safe.html, updates.html
+  styles/styles.css, styles/markdown.css
+  scripts/safe.js, math.js, you.js, cleanup.js, lol.js, fullscreen.js
   media/youare.mp3
-  images/..., favicon.svg
+  images/{speaker,speakerm,warning}.avif, images/idiot.png
+  favicon.ico
 ```
 
 ## Run it locally

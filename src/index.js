@@ -15,12 +15,13 @@ export default {
   async fetch(request, env) {
     const res = await env.ASSETS.fetch(request);
 
-    // Unknown route? If a browser is asking for a page, give it the idiot page
-    // (the popups open /lol.html, but this keeps any path working too).
+    // Unknown route? If a browser is asking for a page, give it the main idiot
+    // page so stray links/typos still land on the experience. (Real assets like
+    // /lol.html, /safe, /updates are served directly above.)
     if (res.status === 404) {
       const accept = request.headers.get('accept') || '';
       if (accept.includes('text/html')) {
-        return env.ASSETS.fetch(new URL('/lol.html', request.url));
+        return env.ASSETS.fetch(new URL('/', request.url));
       }
     }
     return res;

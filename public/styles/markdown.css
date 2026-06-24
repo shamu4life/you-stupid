@@ -1,0 +1,109 @@
+body {
+	font-family: 'Times New Roman', sans-serif;
+	margin: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+	body.adaptive {
+		background-color: rgb(12, 13, 15);
+	}
+	
+	.markdown.adaptive {
+		color: rgb(232, 230, 227);
+	}
+	
+	.adaptive .link {
+		color: rgb(43, 124, 252);
+	}
+	
+	.adaptive .link:visited {
+		color: rgb(207, 133, 229);
+	}
+	
+	.adaptive .link:hover {
+		color: rgb(255, 55, 95);
+	}
+	
+	.adaptive .markdown .link:hover {
+		color: rgb(255, 55, 95);
+	}
+}
+
+.markdown-container {
+	position: absolute;
+	
+	top: 0;
+	left: 0;
+	
+	height: 100%;
+	
+	z-index: -69;
+	
+	display: flex;
+	flex-direction: column;
+	
+	align-items: center;
+	
+	padding: 7px;
+}
+
+.column {
+	width: 100%;
+}
+
+.markdown h1 {
+	margin-block-start: 0.5em;
+}
+
+.markdown h1, h2 {
+	margin-bottom: 0;
+}
+
+.markdown .link {
+	-webkit-transition: 0.3s ease;
+	transition: 0.3s ease;
+}
+
+.markdown .link:hover {
+	font-weight: inherit;
+	color: rgb(213, 0, 43);
+}
+
+.markdown code {
+	padding: .2em .4em;
+	margin: 0;
+	font-size: 85%;
+	white-space: break-spaces;
+	background-color: rgba(175, 184, 193, 0.2);
+	border-radius: 6px;
+}
+
+@media screen and (min-width: 2048px) {
+	.column {
+		width: 40%;
+	}
+	
+	.markdown {
+		font-size: 14pt;
+	}
+	
+	.markdown h1 {
+		margin-block-start: 0.67em;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 2047px) {
+	.column {
+		width: 60%;
+	}
+	
+	
+  
+	.markdown {
+		font-size: 14pt;
+	}
+  
+	.markdown h1 {
+		margin-block-start: 0.33em;
+	}
+}
