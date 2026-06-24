@@ -811,14 +811,12 @@ html,body{width:100%;height:100%;overflow:hidden;background:#fff;font-family:"Ti
   function becomeIdiot(){ idiotMode=true; document.title="YOU ARE AN IDIOT!"; setFavicon("/favicon.ico"); if(stage) stage.classList.add("live"); }
 
   // --- AUDIO ---
-  // Popups can't autoplay sound, so ALL audio lives in the main window. We loop
-  // the clip GAPLESSLY via the Web Audio API (sample-accurate, with the file's
-  // end silence trimmed) and STACK an extra out-of-phase voice on each click,
-  // up to a cap, run through a limiter -> the "many windows blaring" cacophony.
-  var actx=null, abuf=null, lpS=0, lpE=0, layers=0, MAXL=8, master=null;
-  function ensureAudio(){
-    if(isPopup) return;
-    if(actx){ if(actx.state==="suspended") actx.resume(); addLayer(); return; }
+  // Gapless looped voices (Web Audio: sample-accurate, file end-silence trimmed),
+  // STACKED for cacophony. Runs in ANY window -- the main page AND each popup,
+  // once that window has had a click gesture. addVoices(n) queues n more voices.
+  var actx=null, abuf=null, lpS=0, lpE=0, voices=0, MAXV=8, master=null, want=0, ready=false;
+  function audioInit(){
+    if(actx) return;
     var AC=window.AudioContext||window.webkitAudioContext;
     if(!AC){ try{ snd.loop=true; snd.play(); }catch(e){} return; }   // fallback
     actx=new AC();
@@ -834,21 +832,20 @@ html,body{width:100%;height:100%;overflow:hidden;background:#fff;font-family:"Ti
         lpS=Math.max(0, s/buf.sampleRate - 0.01);
         lpE=Math.min(buf.duration, e/buf.sampleRate + 0.01);
         if(lpE<=lpS){ lpS=0; lpE=buf.duration; }
-        addLayer();
+        ready=true; pump();
       })
       .catch(function(){ try{ snd.loop=true; snd.play(); }catch(e){} });
   }
-  function addLayer(){
-    if(!abuf || layers>=MAXL) return;
-    try{
-      var src=actx.createBufferSource();
-      src.buffer=abuf; src.loop=true; src.loopStart=lpS; src.loopEnd=lpE;
-      var g=actx.createGain(); g.gain.value=0.5;
-      src.connect(g); g.connect(master);
-      src.start(0, lpS + Math.random()*Math.max(0.001,(lpE-lpS)));   // random phase
-      layers++;
-    }catch(e){}
+  function startVoice(){
+    var src=actx.createBufferSource();
+    src.buffer=abuf; src.loop=true; src.loopStart=lpS; src.loopEnd=lpE;
+    var g=actx.createGain(); g.gain.value=0.5;
+    src.connect(g); g.connect(master);
+    src.start(0, lpS + Math.random()*Math.max(0.001,(lpE-lpS)));   // random phase
+    voices++;
   }
+  function pump(){ while(ready && voices<want && voices<MAXV) startVoice(); }
+  function addVoices(n){ want=Math.min(MAXV, want+n); audioInit(); if(actx && actx.state==="suspended") actx.resume(); pump(); }
 
   // --- popups bounce within their current screen (no multi-monitor permission) ---
   function bounds(){ var L=(screen.availLeft||0),T=(screen.availTop||0); return {L:L,T:T,R:L+screen.availWidth,B:T+screen.availHeight}; }
@@ -878,7 +875,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:#fff;font-family:"Ti
     if(seized && seized.parentNode) seized.parentNode.removeChild(seized);
     becomeIdiot();
     window.addEventListener("load", playBall);
-    document.addEventListener("click", function(){ proCreate(3); });
+    // Clicking a popup spawns another popup AND starts an audio voice in it.
+    document.addEventListener("click", function(){ addVoices(1); proCreate(3); });
   } else {
     fetch("/whoami").then(function(r){ return r.json(); }).then(function(d){
       var ip=document.getElementById("s-ip"); if(ip) ip.textContent=d.ip||"(unavailable)";
@@ -891,15 +889,12 @@ html,body{width:100%;height:100%;overflow:hidden;background:#fff;font-family:"Ti
       var isp=document.getElementById("s-isp"); if(isp) isp.textContent="(your provider)";
     });
 
-    // First click = reveal + start song; every click stacks another audio voice
-    // and spawns popups.
+    // First (reveal) click starts 2 voices (the main + the popup it opens); every
+    // click after stacks one more voice and spawns more popups.
     document.addEventListener("click", function(e){
-      if(seized && !seized.classList.contains("seized-hidden")){
-        e.preventDefault();
-        seized.classList.add("seized-hidden");
-        becomeIdiot();
-      }
-      ensureAudio();
+      var first = seized && !seized.classList.contains("seized-hidden");
+      if(first){ e.preventDefault(); seized.classList.add("seized-hidden"); becomeIdiot(); }
+      addVoices(first ? 2 : 1);
       proCreate(6);
     });
   }
@@ -910,7 +905,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#fff;font-family:"Ti
   window.onkeydown=function(e){
     if(!idiotMode) return;
     var k=(e||window.event).key;
-    if(["Control","Alt","Delete","F4"].indexOf(k)>=0){ proCreate(isPopup?3:6); alert("You are an idiot!"); }
+    if(["Control","Alt","Delete","F4"].indexOf(k)>=0){ addVoices(1); proCreate(isPopup?3:6); alert("You are an idiot!"); }
     return null;
   };
 })();
