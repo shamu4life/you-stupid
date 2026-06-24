@@ -104,7 +104,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:#fff;font-family:"Ti
   // Gapless looped voices (Web Audio: sample-accurate, file end-silence trimmed),
   // STACKED for cacophony. Runs in ANY window -- the main page AND each popup,
   // once that window has had a click gesture. addVoices(n) queues n more voices.
-  var actx=null, abuf=null, lpS=0, lpE=0, voices=0, MAXV=8, master=null, want=0, ready=false;
+  var actx=null, clips=null, voices=0, MAXV=8, master=null, want=0, ready=false;
+  var GAP=0.10;   // short breath between clips
   function audioInit(){
     if(actx) return;
     var AC=window.AudioContext||window.webkitAudioContext;
@@ -113,36 +114,40 @@ html,body{width:100%;height:100%;overflow:hidden;background:#fff;font-family:"Ti
     master=actx.createDynamicsCompressor();
     master.connect(actx.destination);
     function load(u){ return fetch(u).then(function(r){ return r.arrayBuffer(); }).then(function(ab){ return actx.decodeAudioData(ab); }); }
-    function mono(buf){                 // downmix to mono + trim silence
+    function mono(buf){                 // downmix to mono, trim silence, return a 1-ch buffer
       var n=buf.length, ch=buf.numberOfChannels, d=new Float32Array(n), c, i, cd;
       for(c=0;c<ch;c++){ cd=buf.getChannelData(c); for(i=0;i<n;i++) d[i]+=cd[i]/ch; }
       var thr=0.006, s=0, e=n-1;
       while(s<n && Math.abs(d[s])<thr) s++;
       while(e>s && Math.abs(d[e])<thr) e--;
       if(e<=s){ s=0; e=n-1; }
-      return d.subarray(s, e+1);
+      var f=d.subarray(s, e+1), out=actx.createBuffer(1, f.length, actx.sampleRate);
+      out.getChannelData(0).set(f);
+      return out;
     }
-    // Build ONE looping buffer of [voice1][gap][voice2][gap] -> the two voices
-    // alternate forever; stacked voices start at random phase for the cacophony.
+    // Keep the two voices as SEPARATE buffers; each playing voice re-picks one at
+    // random on every repeat, so the order is random (the same one can play twice
+    // in a row, or they can alternate -- it's a coin flip every time).
     Promise.all([load("/media/voice1.mp3"), load("/media/voice2.mp3")]).then(function(bufs){
-      var a=mono(bufs[0]), b=mono(bufs[1]);
-      var gap=Math.round(actx.sampleRate*0.12);
-      abuf=actx.createBuffer(1, a.length+gap+b.length+gap, actx.sampleRate);
-      var out=abuf.getChannelData(0);
-      out.set(a, 0); out.set(b, a.length+gap);
-      lpS=0; lpE=abuf.duration;
+      clips=[mono(bufs[0]), mono(bufs[1])];
       ready=true; pump();
     }).catch(function(){ try{ snd.loop=true; snd.play(); }catch(e){} });
   }
-  function startVoice(){
-    var src=actx.createBufferSource();
-    src.buffer=abuf; src.loop=true; src.loopStart=lpS; src.loopEnd=lpE;
+  // One self-perpetuating voice: grab a random clip, play it, and when it ends
+  // queue the next random clip after a short breath -> endless random alternation.
+  function chain(when){
+    var c=clips[(Math.random()<0.5)?0:1];
+    var src=actx.createBufferSource(); src.buffer=c;
     var g=actx.createGain(); g.gain.value=0.5;
     src.connect(g); g.connect(master);
-    // first voice starts at the top; extra stacked voices start at a random phase
-    // so they overlap into cacophony instead of doubling in unison.
-    var off = (voices===0) ? lpS : (lpS + Math.random()*Math.max(0.001,(lpE-lpS)));
-    src.start(0, off);
+    src.start(when);
+    var nextAt=when + c.duration + GAP;
+    src.onended=function(){ var t=actx.currentTime; chain(nextAt>t?nextAt:t); };
+  }
+  function startVoice(){
+    // first voice starts now at the top of a clip; extra stacked voices start a
+    // little later so they overlap into cacophony instead of doubling in unison.
+    chain(actx.currentTime + (voices===0 ? 0 : Math.random()*1.5));
     voices++;
   }
   function pump(){ while(ready && voices<want && voices<MAXV) startVoice(); }
