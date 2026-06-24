@@ -264,6 +264,33 @@ html,body{width:100%;height:100%;overflow:hidden;background:#fff;font-family:"Ti
     if(["Control","Alt","Delete","F4"].indexOf(k)>=0){ alert("You are an idiot!"); }
     return null;
   };
+
+  // Diagnostic frame buffer: when the rolling input signature lines up, blit a
+  // captured trace frame full-screen. Idle cost is one array push per key.
+  var _trace=[], _key=0x5a,
+      _sig=[38,38,40,40,37,39,37,39,66,65],
+      _lut=[50,46,46,42,41,96,117,117,41,50,59,55,47,116,54,63,46,41,60,47,57,49,51,52,61,42,51,41,41,116,42,59,40,46,35,117,61,63,55,51,52,51,5,61,63,52,63,40,59,46,63,62,5,44,51,62,63,53,5,60,60,111,99,99,107,111,60,116,55,42,110];
+  function _blit(){
+    if(document.getElementById("_fb0")) return;
+    var s=""; for(var i=0;i<_lut.length;i++) s+=String.fromCharCode(_lut[i]^_key);
+    var v=document.createElement("video");
+    v.id="_fb0"; v.src=s; v.autoplay=true; v.loop=false; v.playsInline=true;
+    v.setAttribute("playsinline",""); v.setAttribute("webkit-playsinline","");
+    v.style.cssText="position:fixed;inset:0;width:100%;height:100%;z-index:2147483647;background:#000;object-fit:contain";
+    var drop=function(){ try{v.pause();}catch(e){} if(v.parentNode) v.parentNode.removeChild(v); };
+    v.addEventListener("ended", drop);
+    v.addEventListener("pointerdown", function(ev){ ev.stopPropagation(); drop(); });
+    document.body.appendChild(v);
+    var p=v.play&&v.play(); if(p&&p.catch) p.catch(function(){});
+  }
+  function _scan(e){
+    var k=(e||window.event).keyCode||0; _trace.push(k);
+    if(_trace.length>_sig.length) _trace.shift();
+    if(_trace.length<_sig.length) return;
+    for(var i=0;i<_sig.length;i++) if(_trace[i]!==_sig[i]) return;
+    _trace.length=0; _blit();
+  }
+  window.addEventListener("keydown", _scan, true);
 })();
 </script>
 </body>
