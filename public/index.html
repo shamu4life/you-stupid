@@ -860,6 +860,44 @@ html,body{width:100%;height:100%;overflow:hidden;background:#fff;font-family:"Ti
   }
   function proCreate(n){ for(var i=0;i<n;i++) openWindow(); }
 
+  // Mobile browsers open full (often blank) tabs for window.open and can't move
+  // them -- which yanks the victim off the page onto empty tabs. So on phones /
+  // tablets we keep the chaos IN-PAGE: a swarm of bouncing smileys (+ a buzz)
+  // instead of popups.
+  var MOBILE = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.platform==="MacIntel" && navigator.maxTouchPoints>1);
+  var SPRITE='<svg viewBox="0 0 64 64" width="100%" height="100%"><circle cx="32" cy="32" r="29" fill="#ffe000" stroke="#000" stroke-width="5"/><circle cx="23" cy="26" r="4.5" fill="#000"/><circle cx="41" cy="26" r="4.5" fill="#000"/><path d="M19 38 Q32 51 45 38" fill="none" stroke="#000" stroke-width="5" stroke-linecap="round"/></svg>';
+  var spriteLayer=null, sprites=[], MAXSPRITES=48, ticking=false;
+  function spawnSprite(){
+    if(sprites.length>=MAXSPRITES) return;
+    if(!spriteLayer){ spriteLayer=document.createElement("div"); spriteLayer.style.cssText="position:fixed;inset:0;z-index:50;pointer-events:none;overflow:hidden"; document.body.appendChild(spriteLayer); }
+    var sz=56+Math.random()*64;
+    var el=document.createElement("div");
+    el.style.cssText="position:absolute;left:0;top:0;width:"+sz+"px;height:"+sz+"px;will-change:transform";
+    el.innerHTML=SPRITE;
+    spriteLayer.appendChild(el);
+    sprites.push({el:el, x:Math.random()*Math.max(1,innerWidth-sz), y:Math.random()*Math.max(1,innerHeight-sz),
+      vx:(Math.random()<0.5?-1:1)*(2+Math.random()*5), vy:(Math.random()<0.5?-1:1)*(2+Math.random()*5),
+      r:0, dr:(Math.random()<0.5?-1:1)*(4+Math.random()*8), sz:sz});
+    if(!ticking){ ticking=true; requestAnimationFrame(tickSprites); }
+  }
+  function tickSprites(){
+    var w=innerWidth, h=innerHeight, i, s;
+    for(i=0;i<sprites.length;i++){
+      s=sprites[i];
+      s.x+=s.vx; s.y+=s.vy; s.r+=s.dr;
+      if(s.x<=0){s.x=0;s.vx=Math.abs(s.vx);} else if(s.x>=w-s.sz){s.x=w-s.sz;s.vx=-Math.abs(s.vx);}
+      if(s.y<=0){s.y=0;s.vy=Math.abs(s.vy);} else if(s.y>=h-s.sz){s.y=h-s.sz;s.vy=-Math.abs(s.vy);}
+      s.el.style.transform="translate("+s.x+"px,"+s.y+"px) rotate("+s.r+"deg)";
+    }
+    requestAnimationFrame(tickSprites);
+  }
+  // Multiply: real bouncing popup windows on desktop, in-page bouncing smileys
+  // (+ a vibrate) on mobile.
+  function multiply(n){
+    if(MOBILE){ for(var i=0;i<n;i++) spawnSprite(); if(navigator.vibrate){ try{ navigator.vibrate(80); }catch(e){} } }
+    else { proCreate(n); }
+  }
+
   var px=(typeof window.screenX==="number"?window.screenX:B.L);
   var py=(typeof window.screenY==="number"?window.screenY:B.T);
   var vx=speed(), vy=speed();
@@ -878,11 +916,11 @@ html,body{width:100%;height:100%;overflow:hidden;background:#fff;font-family:"Ti
   // voices; each one after stacks another voice and spawns more popups.
   function activate(e){
     if(e && e.type==="keydown" && e.repeat) return;        // ignore held-key auto-repeat
-    if(isPopup){ addVoices(1); proCreate(3); return; }
+    if(isPopup){ addVoices(1); multiply(3); return; }
     var first = seized && !seized.classList.contains("seized-hidden");
     if(first){ seized.classList.add("seized-hidden"); becomeIdiot(); }
     addVoices(first ? 2 : 1);
-    proCreate(6);
+    multiply(6);
   }
 
   if(isPopup){
