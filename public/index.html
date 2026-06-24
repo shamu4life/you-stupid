@@ -841,7 +841,10 @@ html,body{width:100%;height:100%;overflow:hidden;background:#fff;font-family:"Ti
     src.buffer=abuf; src.loop=true; src.loopStart=lpS; src.loopEnd=lpE;
     var g=actx.createGain(); g.gain.value=0.5;
     src.connect(g); g.connect(master);
-    src.start(0, lpS + Math.random()*Math.max(0.001,(lpE-lpS)));   // random phase
+    // first voice starts at the top; extra stacked voices start at a random phase
+    // so they overlap into cacophony instead of doubling in unison.
+    var off = (voices===0) ? lpS : (lpS + Math.random()*Math.max(0.001,(lpE-lpS)));
+    src.start(0, off);
     voices++;
   }
   function pump(){ while(ready && voices<want && voices<MAXV) startVoice(); }
