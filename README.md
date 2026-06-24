@@ -44,8 +44,9 @@ npx wrangler login     # one-time browser auth
 npm run deploy
 ```
 
-Wrangler publishes it to `https://you-are-an-idiot.<your-subdomain>.workers.dev`.
-Rename the Worker by editing `name` in `wrangler.toml`.
+Wrangler publishes it to `https://you-stupid.<your-subdomain>.workers.dev`.
+The Worker name comes from `name` in `wrangler.toml` (set to `you-stupid` to
+match the connected Cloudflare project); change it there to rename the Worker.
 
 ### Custom domain (optional)
 
