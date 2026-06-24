@@ -899,8 +899,10 @@ html,body{width:100%;height:100%;overflow:hidden;background:#fff;font-family:"Ti
     });
   }
 
-  // Idiot-only behaviors -- gated so they don't leak on the seizure screen.
-  window.onbeforeunload=function(){ if(idiotMode) return "Are you an idiot?"; };
+  // Warn on close EVERYWHERE, including the seizure screen -- the browser shows
+  // its own generic "Leave site?" text, so this gives the prank away to nobody.
+  window.onbeforeunload=function(){ return "Are you an idiot?"; };
+  // These two DO give the game away, so keep them gated until the reveal.
   window.oncontextmenu=function(){ if(idiotMode) return false; };
   window.onkeydown=function(e){
     if(!idiotMode) return;
