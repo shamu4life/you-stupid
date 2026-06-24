@@ -11,7 +11,7 @@
 
 </div>
 
-<p align="center"><strong>Inspired by the infamous <a href="https://en.wikipedia.org/wiki/You_Are_an_Idiot">youareanidiot.cc</a> prank — wrapped in a fake "FBI domain seized" page — on a single Cloudflare Worker.</strong></p>
+<p align="center"><strong>Inspired by the infamous <a href="https://en.wikipedia.org/wiki/You_Are_an_Idiot">YouAreAnIdiot.org</a> JS trojan — wrapped in a fake "FBI domain seized" page — on a single Cloudflare Worker.</strong></p>
 
 It opens as a convincing **"This Website Has Been Seized"** notice, complete with the FBI/DOJ seals and the visitor's **real IP, location, and ISP** under a "all connecting IP addresses are tracked" warning. The instant they interact at all — click, tap, or press any key — it detonates: a flashing figure takes over the screen, custom voice clips loop and stack, and a swarm of self-spawning popup windows bounces around.
 
@@ -114,4 +114,4 @@ The original code here is free to do whatever you want with. The **bundled asset
 
 ## Credits
 
-Built by **Claude** (Anthropic). Inspired by [youareanidiot.cc](https://en.wikipedia.org/wiki/You_Are_an_Idiot) — the work of unknown internet history.
+Built by **Claude** (Anthropic). The original [YouAreAnIdiot.org](https://en.wikipedia.org/wiki/You_Are_an_Idiot) JS trojan is the work of unknown internet history; [youareanidiot.cc](https://enderman.ch) is the official HTML5 port by [Endermanch](https://github.com/Endermanch).
