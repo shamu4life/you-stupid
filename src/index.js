@@ -1,23 +1,43 @@
 // YOU ARE AN IDIOT — served from a single Cloudflare Worker.
 //
-// This serves a faithful copy of the real youareanidiot.cc (the HTML5 port:
-// the genuine 2-frame dancing SVG, the real 320kbps "you are an idiot" song,
-// and the original click->popup "procreate" + window-bouncing behavior) out of
-// ./public via Workers Static Assets, plus two additions wired in on the
-// client: auto-fullscreen and audio-on-first-gesture (see scripts/fullscreen.js).
+// Serves the prank out of ./public via Workers Static Assets:
+//   * index.html  — a fake "domain seized by the FBI" interstitial that, on
+//                   click, detonates into the real youareanidiot.cc experience
+//                   (2-frame dancing SVG + the real song + bouncing popups).
+//   * media/youare.mp3, favicon.ico — static assets.
 //
-// The Worker itself just routes:
-//   * real files (page, css, js, mp3, icons) -> served from static assets
-//   * any other path                         -> the idiot page, so popups and
-//                                               stray links keep the chaos going
+// Dynamic bits handled by the Worker:
+//   * GET /whoami  — returns the visitor's real IP + geo (from Cloudflare) so
+//                    the seizure page can show "we're tracking you" details.
+//   * any unknown HTML route -> the main page, so stray links still work.
 
 export default {
   async fetch(request, env) {
+    const url = new URL(request.url);
+
+    if (url.pathname === '/whoami') {
+      const cf = request.cf || {};
+      const data = {
+        ip:
+          request.headers.get('CF-Connecting-IP') ||
+          request.headers.get('x-real-ip') ||
+          (request.headers.get('x-forwarded-for') || '').split(',')[0].trim() ||
+          'unknown',
+        city: cf.city || '',
+        region: cf.region || '',
+        country: cf.country || '',
+        isp: cf.asOrganization || '',
+        postal: cf.postalCode || '',
+      };
+      return new Response(JSON.stringify(data), {
+        headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' },
+      });
+    }
+
     const res = await env.ASSETS.fetch(request);
 
-    // Unknown route? If a browser is asking for a page, give it the main idiot
-    // page so stray links/typos still land on the experience. (Real assets like
-    // /lol.html, /safe, /updates are served directly above.)
+    // Unknown route? If a browser is asking for a page, give it the main page so
+    // stray links/typos still land on the experience.
     if (res.status === 404) {
       const accept = request.headers.get('accept') || '';
       if (accept.includes('text/html')) {
