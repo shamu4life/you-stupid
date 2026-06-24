@@ -30,8 +30,8 @@ It opens as a convincing **"This Website Has Been Seized"** notice, complete wit
 A.k.a. things browsers no longer let a prank do — none of these are bugs, they're the modern web:
 
 - **Nothing starts with zero interaction.** Sound legally requires a user gesture, so everything waits for the first one — but *any* gesture counts: a click, a tap, or a single keypress (even Alt to alt-tab away). A pure glance-and-close-the-tab escapes, and there's no way around that.
-- **The popup blocker caps the swarm.** Chrome/Edge open ~1 popup per click unless the visitor allows pop-ups for the site; Firefox opens several. The code asks for more — the browser decides.
-- **Audio lives in the windows you've clicked.** A freshly-spawned popup can't autoplay, so each window starts its own voice only once *it* is clicked.
+- **The pop-up blocker caps the swarm.** Chrome/Edge open ~1 popup per click unless the visitor allows pop-ups for the site; Firefox opens several. The code asks for more — the browser decides.
+- **Audio lives in the windows you've clicked.** A freshly-spawned pop-up can't autoplay, so each window starts its own voice only once *it* is clicked.
 - **The close prompt is generic.** Browsers hardcode the "Leave site?" text and ignore custom messages, so it can't say "Are you an idiot?".
 
 ---
@@ -53,10 +53,10 @@ The whole experience is one `public/index.html`: a fixed `#seized` overlay (the 
 <details>
 <summary><strong>The interesting bits</strong></summary>
 
-- **Random, stacking audio (Web Audio).** Two custom voice clips are decoded separately and silence-trimmed. Each repeat picks one at random (coin flip — so the same clip can play twice in a row). Each click stacks another voice through a limiter, with staggered start times so they build into cacophony rather than doubling in unison.
+- **Random, stacking audio (Web Audio).** Two custom voice clips are decoded separately and silence-trimmed. Each repeat picks one at random (coin flip — so the same clip can play twice in a row). Each click stacks another voice through a limiter, with staggered start times so they build into a cacophony rather than doubling in unison.
 - **CSS flash figure.** The "you are an idiot" text and emote images sit inside a `filter:invert()` animation toggling at ~1.5fps via `step-end` keyframes — the same black-and-white strobing effect as the original, no SVG frames needed.
-- **Bouncing popups.** Script-opened windows are moved with `window.moveTo` on a random-walk (both axes), bouncing off the current screen's bounds (`availLeft`/`availTop`, so it behaves on multi-monitor desktops).
-- **It doesn't leak.** Audio, the close-nag, the right-click block, and the anti-`Alt+F4` alert are all gated until *after* the reveal — until then the seizure page is completely deadpan.
+- **Bouncing popups.** Script-opened windows are moved with `window.moveTo` on a random walk (both axes), bouncing off the current screen's bounds (`availLeft`/`availTop`), so it behaves on multi-monitor desktops.
+- **It doesn't leak.** Audio, the close-nag, the right-click block, and the anti-`Alt+F4` alert are all gated until *after* the reveal — until then, the seizure page is completely deadpan.
 
 </details>
 
@@ -106,10 +106,10 @@ No bundler, no build step, no `node_modules` folder silently judging you.
 
 ## License &amp; assets
 
-The original code here is free to do whatever you want with. The **bundled assets are not mine to license**: the FBI/DOJ seals and the "seized" background belong to their respective owners and are included purely for parody. This is a joke; treat it like one.
+The original code here is free to use however you want. The **bundled assets are not mine to license**: the FBI/DOJ seals and the "seized" background belong to their respective owners and are included purely for parody. This is a joke; treat it like one.
 
 ---
 
 ## Credits
 
-Built by **Claude** (Anthropic). The original [YouAreAnIdiot.org](https://en.wikipedia.org/wiki/You_Are_an_Idiot) JS trojan is the work of unknown internet history; [youareanidiot.cc](https://enderman.ch) is the official HTML5 port by [Endermanch](https://github.com/Endermanch).
+Built by **Claude** (Anthropic). The original [YouAreAnIdiot.org](https://en.wikipedia.org/wiki/You_Are_an_Idiot) JS trojan is the work of unknown internet history; [youareanidiot.cc](https://youareanidiot.cc) is the official HTML5 port by [Endermanch](https://github.com/Endermanch).
