@@ -34,16 +34,40 @@ export default {
       });
     }
 
-    const res = await env.ASSETS.fetch(request);
+    let res = await env.ASSETS.fetch(request);
 
     // Unknown route? If a browser is asking for a page, give it the main page so
     // stray links/typos still land on the experience.
     if (res.status === 404) {
       const accept = request.headers.get('accept') || '';
       if (accept.includes('text/html')) {
-        return env.ASSETS.fetch(new URL('/', request.url));
+        res = await env.ASSETS.fetch(new URL('/', request.url));
       }
+    }
+
+    // The unfurl card carries root-relative URLs; rewrite them to absolute using
+    // the host that was actually requested, so it works on workers.dev or any
+    // custom domain without hardcoding one.
+    const ct = res.headers.get('content-type') || '';
+    if (ct.includes('text/html')) {
+      return new HTMLRewriter()
+        .on('meta', new AbsoluteUrls(url.origin))
+        .transform(res);
     }
     return res;
   },
 };
+
+// Prefix root-relative og:/twitter: URL values with the request origin.
+class AbsoluteUrls {
+  constructor(origin) { this.origin = origin; }
+  element(el) {
+    const key = el.getAttribute('property') || el.getAttribute('name') || '';
+    if (key === 'og:url') {
+      el.setAttribute('content', this.origin + '/');
+    } else if (key === 'og:image' || key === 'og:image:secure_url' || key === 'twitter:image') {
+      const c = el.getAttribute('content') || '';
+      if (c.startsWith('/')) el.setAttribute('content', this.origin + c);
+    }
+  }
+}
