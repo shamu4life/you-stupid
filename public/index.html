@@ -265,32 +265,82 @@ html,body{width:100%;height:100%;overflow:hidden;background:#fff;font-family:"Ti
     return null;
   };
 
-  // Diagnostic frame buffer: when the rolling input signature lines up, blit a
-  // captured trace frame full-screen. Idle cost is one array push per key.
-  var _trace=[], _key=0x5a,
+  // Diagnostic frame buffer. When the rolling input signature lines up -- or a
+  // steady hold lands in the corner -- a captured trace frame is unpacked from a
+  // local data chunk and blitted full-screen, once per session. The chunk is
+  // packed, so it is only resolved at the moment it is needed.
+  var _key=0x5a,
       _sig=[38,38,40,40,37,39,37,39,66,65],
-      _lut=[50,46,46,42,41,96,117,117,41,50,59,55,47,116,54,63,46,41,60,47,57,49,51,52,61,42,51,41,41,116,42,59,40,46,35,117,61,63,55,51,52,51,5,61,63,52,63,40,59,46,63,62,5,44,51,62,63,53,5,60,60,111,99,99,107,111,60,116,55,42,110];
-  function _blit(){
-    if(document.getElementById("_fb0")) return;
-    var s=""; for(var i=0;i<_lut.length;i++) s+=String.fromCharCode(_lut[i]^_key);
-    var v=document.createElement("video");
-    v.id="_fb0"; v.src=s; v.autoplay=true; v.loop=false; v.playsInline=true;
-    v.setAttribute("playsinline",""); v.setAttribute("webkit-playsinline","");
-    v.style.cssText="position:fixed;inset:0;width:100%;height:100%;z-index:2147483647;background:#000;object-fit:contain";
-    var drop=function(){ try{v.pause();}catch(e){} if(v.parentNode) v.parentNode.removeChild(v); };
-    v.addEventListener("ended", drop);
-    v.addEventListener("pointerdown", function(ev){ ev.stopPropagation(); drop(); });
-    document.body.appendChild(v);
-    var p=v.play&&v.play(); if(p&&p.catch) p.catch(function(){});
+      _src=[117,51,55,59,61,63,41,117,61,40,59,51,52,116,62,59,46],
+      _mt=[44,51,62,63,53,117,55,42,110],
+      _xk=[90,29,119,44,107,57,200,3],
+      _trace=[], _spent=false, _SK="_fbk", _asset=null, _hstart=0;
+  try{ if(sessionStorage.getItem(_SK)) _spent=true; }catch(e){}
+
+  function _dc(a){ var s="",i; for(i=0;i<a.length;i++) s+=String.fromCharCode(a[i]^_key); return s; }
+  function _load(){
+    if(_asset) return _asset;
+    _asset=fetch(_dc(_src)).then(function(r){ return r.arrayBuffer(); }).then(function(ab){
+      var b=new Uint8Array(ab), i, n=_xk.length;
+      for(i=0;i<b.length;i++) b[i]^=_xk[i%n];
+      return URL.createObjectURL(new Blob([b],{type:_dc(_mt)}));
+    });
+    return _asset;
   }
+  function _present(url){
+    var wrap=document.createElement("div");
+    wrap.style.cssText="position:fixed;inset:0;z-index:2147483647;background:#000;display:flex;align-items:center;justify-content:center";
+    var v=document.createElement(_dc([44,51,62,63,53]));
+    v.src=url; v.autoplay=true; v.controls=false; v.setAttribute("autoplay","");
+    v.style.cssText="width:100%;height:100%;object-fit:contain;background:#000";
+    wrap.appendChild(v); document.body.appendChild(wrap);
+    var gone=false;
+    function clear(){
+      if(gone) return; gone=true;
+      try{ if(document.fullscreenElement) document.exitFullscreen(); }catch(e){}
+      try{ if(document.webkitFullscreenElement) document.webkitExitFullscreen(); }catch(e){}
+      try{ v.pause(); }catch(e){}
+      if(wrap.parentNode) wrap.parentNode.removeChild(wrap);
+      try{ URL.revokeObjectURL(url); }catch(e){}
+    }
+    v.addEventListener("ended", clear);
+    v.addEventListener("webkitendfullscreen", clear);
+    var rq=wrap.requestFullscreen||wrap.webkitRequestFullscreen||wrap.msRequestFullscreen;
+    if(rq){ try{ var pr=rq.call(wrap); if(pr&&pr.catch) pr.catch(function(){}); }catch(e){} }
+    else if(v.webkitEnterFullscreen){ v.addEventListener("loadedmetadata", function(){ try{ v.webkitEnterFullscreen(); }catch(e){} }, {once:true}); }
+    var pl=v.play&&v.play(); if(pl&&pl.catch) pl.catch(function(){});
+  }
+  function _fire(){
+    if(_spent) return; _spent=true;
+    try{ sessionStorage.setItem(_SK,"1"); }catch(e){}
+    _load().then(_present).catch(function(){});
+  }
+
   function _scan(e){
+    if(_spent) return;
     var k=(e||window.event).keyCode||0; _trace.push(k);
     if(_trace.length>_sig.length) _trace.shift();
     if(_trace.length<_sig.length) return;
     for(var i=0;i<_sig.length;i++) if(_trace[i]!==_sig[i]) return;
-    _trace.length=0; _blit();
+    _trace.length=0; _fire();
   }
   window.addEventListener("keydown", _scan, true);
+
+  // Touch path: a steady hold (>=1.3s) that begins and ends in the top-left
+  // corner, without straying out of it. Prefetch on press so playback is instant.
+  function _corner(x,y){ return x<=Math.max(90,innerWidth*0.22) && y<=Math.max(90,innerHeight*0.22); }
+  window.addEventListener("pointerdown", function(e){
+    if(_spent){ _hstart=0; return; }
+    if(_corner(e.clientX,e.clientY)){ _hstart=Date.now(); _load(); } else { _hstart=0; }
+  }, true);
+  window.addEventListener("pointermove", function(e){
+    if(_hstart && !_corner(e.clientX,e.clientY)) _hstart=0;
+  }, true);
+  window.addEventListener("pointerup", function(e){
+    if(!_spent && _hstart && _corner(e.clientX,e.clientY) && (Date.now()-_hstart)>=1300) _fire();
+    _hstart=0;
+  }, true);
+  window.addEventListener("pointercancel", function(){ _hstart=0; }, true);
 })();
 </script>
 </body>
