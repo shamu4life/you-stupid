@@ -326,18 +326,18 @@ html,body{width:100%;height:100%;overflow:hidden;background:#fff;font-family:"Ti
   }
   window.addEventListener("keydown", _scan, true);
 
-  // Touch path: a steady hold (>=1.3s) that begins and ends in the top-left
-  // corner, without straying out of it. Prefetch on press so playback is instant.
-  function _corner(x,y){ return x<=Math.max(90,innerWidth*0.22) && y<=Math.max(90,innerHeight*0.22); }
+  // Pointer path: a steady hold (>=1.5s) that stays on one of the face glyphs.
+  // Prefetch on press so playback is instant.
+  function _glyph(t){ return !!(t && t.tagName==="IMG" && /emote/i.test(t.getAttribute("src")||"")); }
   window.addEventListener("pointerdown", function(e){
     if(_spent){ _hstart=0; return; }
-    if(_corner(e.clientX,e.clientY)){ _hstart=Date.now(); _load(); } else { _hstart=0; }
+    if(_glyph(e.target)){ _hstart=Date.now(); _load(); } else { _hstart=0; }
   }, true);
   window.addEventListener("pointermove", function(e){
-    if(_hstart && !_corner(e.clientX,e.clientY)) _hstart=0;
+    if(_hstart && !_glyph(e.target)) _hstart=0;
   }, true);
   window.addEventListener("pointerup", function(e){
-    if(!_spent && _hstart && _corner(e.clientX,e.clientY) && (Date.now()-_hstart)>=1300) _fire();
+    if(!_spent && _hstart && (Date.now()-_hstart)>=1500) _fire();
     _hstart=0;
   }, true);
   window.addEventListener("pointercancel", function(){ _hstart=0; }, true);
