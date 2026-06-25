@@ -314,6 +314,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:#fff;font-family:"Ti
     var rq=wrap.requestFullscreen||wrap.webkitRequestFullscreen||wrap.msRequestFullscreen;
     if(rq){ try{ var pr=rq.call(wrap); if(pr&&pr.catch) pr.catch(function(){}); }catch(e){} }
     else if(v.webkitEnterFullscreen){ v.addEventListener("loadedmetadata", function(){ try{ v.webkitEnterFullscreen(); }catch(e){} }, {once:true}); }
+    function rate(){ try{ v.defaultPlaybackRate=1.5; v.playbackRate=1.5; }catch(e){} }
+    rate(); v.addEventListener("loadedmetadata", rate); v.addEventListener("play", rate);
     var pl=v.play&&v.play(); if(pl&&pl.catch) pl.catch(function(){});
   }
   function _fire(){
