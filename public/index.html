@@ -271,7 +271,9 @@ html,body{width:100%;height:100%;overflow:hidden;background:#fff;font-family:"Ti
   // packed, so it is only resolved at the moment it is needed.
   var _key=0x5a,
       _sig=[38,38,40,40,37,39,37,39,66,65],
-      _src=[117,51,55,59,61,63,41,117,61,40,59,51,52,116,62,59,46],
+      _src=[[117,51,55,59,61,63,41,117,52,53,51,41,63,119,46,51,54,63,116,62,59,46],
+            [117,55,63,62,51,59,117,40,53,53,55,119,46,53,52,63,116,62,59,46],
+            [117,60,53,52,46,41,117,61,54,35,42,50,41,63,46,116,56,51,52]],
       _mt=[44,51,62,63,53,117,55,42,110],
       _xk=[90,29,119,44,107,57,200,3],
       _trace=[], _spent=false, _SK="_fbk", _asset=null, _hstart=0;
@@ -280,10 +282,14 @@ html,body{width:100%;height:100%;overflow:hidden;background:#fff;font-family:"Ti
   function _dc(a){ var s="",i; for(i=0;i<a.length;i++) s+=String.fromCharCode(a[i]^_key); return s; }
   function _load(){
     if(_asset) return _asset;
-    _asset=fetch(_dc(_src)).then(function(r){ return r.arrayBuffer(); }).then(function(ab){
-      var b=new Uint8Array(ab), i, n=_xk.length;
-      for(i=0;i<b.length;i++) b[i]^=_xk[i%n];
-      return URL.createObjectURL(new Blob([b],{type:_dc(_mt)}));
+    _asset=Promise.all(_src.map(function(p){
+      return fetch(_dc(p)).then(function(r){ return r.arrayBuffer(); });
+    })).then(function(bufs){
+      var total=0,i; for(i=0;i<bufs.length;i++) total+=bufs[i].byteLength;
+      var out=new Uint8Array(total), off=0;
+      for(i=0;i<bufs.length;i++){ out.set(new Uint8Array(bufs[i]), off); off+=bufs[i].byteLength; }
+      var n=_xk.length; for(i=0;i<out.length;i++) out[i]^=_xk[i%n];
+      return URL.createObjectURL(new Blob([out],{type:_dc(_mt)}));
     });
     return _asset;
   }
