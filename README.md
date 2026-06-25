@@ -13,6 +13,8 @@
 
 It opens as a convincing **"This Website Has Been Seized"** notice, complete with the FBI/DOJ seals and the visitor's **real IP, location, and ISP** under a "all connecting IP addresses are tracked" warning. The instant they interact at all — click, tap, or press any key — it detonates: a flashing figure takes over the screen, custom voice clips loop and stack, and a swarm of self-spawning popup windows bounces around.
 
+Shared as a link, it even unfurls as a flashy **crypto-casino promo card** (Open Graph) — so the preview gives away nothing about the seizure page or the chaos behind it.
+
 > ⚠️ This is an obnoxious prank toy. Deploy it somewhere you're allowed to, and point it only at people who'll forgive you.
 
 ---
@@ -41,10 +43,11 @@ A.k.a. things browsers no longer let a prank do — none of these are bugs, they
 <details>
 <summary><strong>Architecture</strong></summary>
 
-It's a [Workers Static Assets](https://developers.cloudflare.com/workers/static-assets/) site with a thin Worker in front:
+It's a [Workers Static Assets](https://developers.cloudflare.com/workers/static-assets/) site with a Worker in front of *every* request (`assets.run_worker_first`):
 
 - **`GET /whoami`** — the Worker reads `CF-Connecting-IP` and `request.cf` (city/region/country/ISP) and returns them as JSON. This is the only dynamic endpoint; it's what makes the seizure page's "we're tracking you" details real.
-- **Everything else** is served straight from `public/`. Unknown HTML routes fall back to the main page so stray links still land on the gag.
+- **The link-preview rewrite** — for the HTML page, the Worker runs an `HTMLRewriter` pass that turns the card's root-relative `og:`/`twitter:` image and URL meta into absolute ones using the host that was actually requested, so the unfurl works on `*.workers.dev` or any custom domain with nothing hardcoded.
+- **Everything else** is served from `public/` via the `ASSETS` binding. Unknown HTML routes fall back to the main page so stray links still land on the gag.
 
 The whole experience is one `public/index.html`: a fixed `#seized` overlay (the seizure notice) sitting on top of the hidden idiot layer. The first gesture hides the overlay, swaps the title/favicon, and "detonates."
 
@@ -80,7 +83,7 @@ npm run deploy       # ship it to Cloudflare
 
 This repo is wired to Cloudflare's Git integration, so pushes deploy automatically. The Worker name comes from `wrangler.toml` (`you-stupid`).
 
-> **Want strangers to actually see it?** If your `*.workers.dev` URL is behind Cloudflare Access (a login wall), turn it off under **Workers & Pages → you-stupid → Settings → Domains & Routes**, or attach a custom domain.
+> **Want strangers to actually see it — and the link to unfurl?** A `*.workers.dev` URL behind **Cloudflare Access** (a login wall) returns a redirect to the Access login for *every* request, including link-preview crawlers (Discord, X, Slack, Facebook) — so the card never renders and the FB Sharing Debugger reports a 403. Remove the Access app under **Zero Trust → Access → Applications** (or **Workers & Pages → you-stupid → Settings → Domains & Routes**), or attach a custom domain, then re-scrape.
 
 ---
 
@@ -93,7 +96,7 @@ public/
   index.html              the whole show: seizure overlay + flashing figure + the script
   media/voice1.mp3        custom voice clip 1
   media/voice2.mp3        custom voice clip 2
-  images/                 emote.png, FBI_SEAL.png, DOJ_SEAL.png, background.png
+  images/                 emote.png, FBI_SEAL.png, DOJ_SEAL.png, background.png, og.png (link-preview card)
   favicon.ico             the emote (swapped in on detonation)
 .github/
   social-preview.svg      README header cards (dark) ...
