@@ -82,6 +82,22 @@ export default {
       });
     }
 
+    // Default /favicon.ico is the "uwoChud" emote — which leaks the gag in the
+    // browser tab before anyone even clicks. Serve a host-appropriate icon
+    // instead: the youtooz logo on the clone, the FBI seal on the seizure page.
+    // (Detonation still swaps the tab icon to the emote via JS.)
+    if (url.pathname === '/favicon.ico') {
+      const icon = casino ? '/images/FBI_SEAL.png' : '/images/youtooz-logo.svg';
+      const r = await env.ASSETS.fetch(new URL(icon, request.url));
+      return new Response(r.body, {
+        status: r.status,
+        headers: {
+          'content-type': r.headers.get('content-type') || 'image/svg+xml',
+          'cache-control': 'public, max-age=3600',
+        },
+      });
+    }
+
     // Which front door does this host get for the root / unknown-HTML routes?
     const frontDoor = casino ? '/seized.html' : '/';
 
