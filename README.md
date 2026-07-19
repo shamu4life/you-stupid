@@ -9,11 +9,12 @@
 
 </div>
 
-<p align="center"><strong>Inspired by the infamous <a href="https://en.wikipedia.org/wiki/You_Are_an_Idiot">YouAreAnIdiot.org</a> JS trojan — wrapped in a fake "FBI domain seized" page — on a single Cloudflare Worker.</strong></p>
+<p align="center"><strong>Inspired by the infamous <a href="https://en.wikipedia.org/wiki/You_Are_an_Idiot">YouAreAnIdiot.org</a> JS trojan — behind two different disguises — on a single Cloudflare Worker.</strong></p>
 
-It opens as a convincing **"This Website Has Been Seized"** notice, complete with the FBI/DOJ seals and the visitor's **real IP, location, and ISP** under a "all connecting IP addresses are tracked" warning. The instant they interact at all — click, tap, or press any key — it detonates: a flashing figure takes over the screen, custom voice clips loop and stack, and a swarm of self-spawning popup windows bounces around.
+The same chaos engine now sits behind **two host-routed front doors**:
 
-Shared as a link, it even unfurls as a flashy **crypto-casino promo card** (Open Graph) — so the preview gives away nothing about the seizure page or the chaos behind it.
+- **The plain domain** opens as a pixel clone of a real **youtooz plush product page** ("UwosLab: The Grillerrr Plush"), price and description and all. The drop countdown is frozen at `00 : 00 : 00 : 00`, and the moment the mark clicks **Add to cart** it detonates *in place* — a flashing figure takes over, custom voice clips loop and stack, and a swarm of self-spawning popup windows bounces around. Shared as a link, it unfurls as the genuine-looking product card, so nothing gives it away.
+- **The `casino.` subdomain** opens as the original convincing **"This Website Has Been Seized"** notice — FBI/DOJ seals, the visitor's **real IP, location, and ISP** under an "all connecting IP addresses are tracked" warning — and detonates on *any* gesture. Shared as a link, it unfurls as a flashy **crypto-casino promo card**.
 
 > ⚠️ This is an obnoxious prank toy. Deploy it somewhere you're allowed to, and point it only at people who'll forgive you.
 
@@ -21,9 +22,16 @@ Shared as a link, it even unfurls as a flashy **crypto-casino promo card** (Open
 
 ## What happens
 
-1. **The bait.** A serious-looking federal seizure page (real seals over a dark backdrop) reads back the visitor's actual `IP · city, region, country · ISP` — pulled live from Cloudflare — with a blinking "connection logged & monitored" line, a timestamp, and a case number. It behaves like a normal page: no sound, no funny business, nothing leaks.
-2. **The detonation.** Any gesture — click **Return to Safety**, tap, or press any key: the tab title flips to **YOU ARE AN IDIOT!**, the favicon swaps to the emote, the voice clips kick in, and the flashing black-and-white figure takes over the screen.
-3. **The chaos.** Every gesture spawns popup windows that bounce erratically around the screen; interacting with *those* spawns more and stacks another out-of-phase copy of the audio, building into a proper wall of noise.
+### The plain domain — the plush store
+
+1. **The bait.** A faithful clone of the youtooz product page: real gallery images, `$29.99 USD`, the actual product blurb, a "Pre-order" line — and a drop countdown **frozen at zero**. Thumbnails swap the hero image and the quantity stepper works, so it behaves like the real store. No sound, nothing leaks.
+2. **The detonation.** Clicking **Add to cart** flips the tab title to **YOU ARE AN IDIOT!**, swaps the favicon, kicks in the voice clips, and drops the flashing black-and-white figure over the whole page — using that click as the gesture, so audio and popups fire immediately.
+3. **The chaos.** Popup windows bounce erratically around the screen; each one is its own copy of the page (storefront stripped to just the flashing figure). Interacting with any of them spawns more and stacks another out-of-phase copy of the audio, building into a proper wall of noise.
+
+### The `casino.` subdomain — the seizure page
+
+1. **The bait.** A serious-looking federal seizure page (real seals over a dark backdrop) reads back the visitor's actual `IP · city, region, country · ISP` — pulled live from Cloudflare — with a blinking "connection logged & monitored" line. It behaves like a normal page.
+2. **The detonation.** *Any* gesture — click **Return to Safety**, tap, or press any key — flips to **YOU ARE AN IDIOT!** and the same chaos engine takes over.
 
 ---
 
@@ -45,11 +53,12 @@ A.k.a. things browsers no longer let a prank do — none of these are bugs, they
 
 It's a [Workers Static Assets](https://developers.cloudflare.com/workers/static-assets/) site with a Worker in front of *every* request (`assets.run_worker_first`):
 
+- **Host routing** — the Worker picks a front door by hostname: the `casino.` subdomain's root serves `public/seized.html` (the FBI page); every other host serves `public/index.html` (the youtooz clone). Unknown HTML routes fall back to that host's front door so stray links still land on the gag.
 - **`GET /whoami`** — the Worker reads `CF-Connecting-IP` and `request.cf` (city/region/country/ISP) and returns them as JSON. This is the only dynamic endpoint; it's what makes the seizure page's "we're tracking you" details real.
-- **The link-preview rewrite** — for the HTML page, the Worker runs an `HTMLRewriter` pass that turns the card's root-relative `og:`/`twitter:` image and URL meta into absolute ones using the host that was actually requested, so the unfurl works on `*.workers.dev` or any custom domain with nothing hardcoded.
-- **Everything else** is served from `public/` via the `ASSETS` binding. Unknown HTML routes fall back to the main page so stray links still land on the gag.
+- **The link-preview rewrite** — for HTML pages, the Worker runs an `HTMLRewriter` pass that turns each page's root-relative `og:`/`twitter:` image and URL meta into absolute ones using the host that was actually requested, so the unfurl works on `*.workers.dev` or any custom domain with nothing hardcoded.
+- **Everything else** is served from `public/` via the `ASSETS` binding.
 
-The whole experience is one `public/index.html`: a fixed `#seized` overlay (the seizure notice) sitting on top of the hidden idiot layer. The first gesture hides the overlay, swaps the title/favicon, and "detonates."
+The clone (`index.html`) hides the idiot layer under a normal-looking storefront and detonates on **Add to cart**; the seizure page (`seized.html`) hides it under the `#seized` overlay and detonates on the first gesture. Both swap the title/favicon and share the same audio/popup engine. To point the casino door at the Worker, add a `casino.` DNS record for your domain (e.g. `casino.uwutoowo.com`) alongside the apex.
 
 </details>
 
@@ -90,13 +99,14 @@ This repo is wired to Cloudflare's Git integration, so pushes deploy automatical
 ## Project layout
 
 ```
-src/index.js              Worker: serves ./public, plus GET /whoami (visitor IP + geo)
+src/index.js              Worker: host-routes the two front doors, GET /whoami (visitor IP + geo)
 wrangler.toml             Cloudflare Workers (static assets) config
 public/
-  index.html              the whole show: seizure overlay + flashing figure + the script
+  index.html              apex front door: youtooz product-page clone + idiot engine (Add to cart detonates)
+  seized.html             casino.* front door: FBI seizure page + idiot engine (any gesture detonates)
   media/voice1.mp3        custom voice clip 1
   media/voice2.mp3        custom voice clip 2
-  images/                 emote.png, FBI_SEAL.png, DOJ_SEAL.png, background.png, og.png (link-preview card)
+  images/                 emote.png; uwo1-5.png + uwo_og.png (clone product + card); FBI_SEAL/DOJ_SEAL/background/og.png (seizure page + casino card)
   favicon.ico             the emote (swapped in on detonation)
 .github/
   social-preview.svg      README header cards (dark) ...
