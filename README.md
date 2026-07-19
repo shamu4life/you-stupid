@@ -13,7 +13,7 @@
 
 The same chaos engine now sits behind **two host-routed front doors**:
 
-- **The plain domain** opens as a pixel clone of a real **youtooz plush product page** ("UwosLab: The Grillerrr Plush"), price and description and all. The drop countdown is frozen at `00 : 00 : 00 : 00`, and the moment the mark clicks **Add to cart** it detonates *in place* — a flashing figure takes over, custom voice clips loop and stack, and a swarm of self-spawning popup windows bounces around. Shared as a link, it unfurls as the genuine-looking product card, so nothing gives it away.
+- **The plain domain** opens as a pixel clone of a real **youtooz plush product page** ("UwosLab: The Grillerrr Plush"), price and description and all. The drop countdown is frozen at `00 : 00 : 00 : 00`, and the moment the mark clicks **Add to cart** it detonates *in place* — a flashing figure takes over, custom voice clips loop and stack, and a swarm of self-spawning popup windows bounces around. Shared as a link, it unfurls as the genuine-looking product card, so nothing gives it away. **Until the real drop closes it just 302-redirects to the genuine youtooz product; at a configured cutover instant the Worker automatically flips to serving the clone** — no redeploy, no hand on the switch.
 - **The `casino.` subdomain** opens as the original convincing **"This Website Has Been Seized"** notice — FBI/DOJ seals, the visitor's **real IP, location, and ISP** under an "all connecting IP addresses are tracked" warning — and detonates on *any* gesture. Shared as a link, it unfurls as a flashy **crypto-casino promo card**.
 
 > ⚠️ This is an obnoxious prank toy. Deploy it somewhere you're allowed to, and point it only at people who'll forgive you.
@@ -24,6 +24,7 @@ The same chaos engine now sits behind **two host-routed front doors**:
 
 ### The plain domain — the plush store
 
+0. **The cutover.** Before the drop's cutover instant the Worker 302-redirects the plain domain straight to the real youtooz product page — so while the genuine drop is live, the domain behaves exactly as it always did. At the cutover moment (`Date.now() ≥ CUTOVER`) it stops redirecting and starts serving the clone below. The flip is automatic and needs no deploy; a `no-store` header keeps the redirect from caching past it.
 1. **The bait.** A faithful clone of the youtooz product page: real gallery images, `$29.99 USD`, the actual product blurb, a "Pre-order" line — and a drop countdown **frozen at zero**. Thumbnails swap the hero image and the quantity stepper works, so it behaves like the real store. No sound, nothing leaks.
 2. **The detonation.** Clicking **Add to cart** flips the tab title to **YOU ARE AN IDIOT!**, swaps the favicon, kicks in the voice clips, and drops the flashing black-and-white figure over the whole page — using that click as the gesture, so audio and popups fire immediately.
 3. **The chaos.** Popup windows bounce erratically around the screen; each one is its own copy of the page (storefront stripped to just the flashing figure). Interacting with any of them spawns more and stacks another out-of-phase copy of the audio, building into a proper wall of noise.
@@ -54,11 +55,14 @@ A.k.a. things browsers no longer let a prank do — none of these are bugs, they
 It's a [Workers Static Assets](https://developers.cloudflare.com/workers/static-assets/) site with a Worker in front of *every* request (`assets.run_worker_first`):
 
 - **Host routing** — the Worker picks a front door by hostname: the `casino.` subdomain's root serves `public/seized.html` (the FBI page); every other host serves `public/index.html` (the youtooz clone). Unknown HTML routes fall back to that host's front door so stray links still land on the gag.
+- **Timed apex cutover** — for every non-`casino.` host, `apexServesTroll()` compares `Date.now()` against a cutover time (`CUTOVER_ISO` var, else the baked-in default). *Before* it, the Worker returns a `302` to the youtooz product URL (`Cache-Control: no-store` so it never sticks past cutover) — this replaces a standalone Cloudflare Redirect Rule, so the Worker owns the whole apex. *After* it, the same host serves the clone. `?preview=troll` / `?preview=redirect` force either state for testing. The `casino.` subdomain is exempt — never redirected, never time-gated.
 - **`GET /whoami`** — the Worker reads `CF-Connecting-IP` and `request.cf` (city/region/country/ISP) and returns them as JSON. This is the only dynamic endpoint; it's what makes the seizure page's "we're tracking you" details real.
 - **The link-preview rewrite** — for HTML pages, the Worker runs an `HTMLRewriter` pass that turns each page's root-relative `og:`/`twitter:` image and URL meta into absolute ones using the host that was actually requested, so the unfurl works on `*.workers.dev` or any custom domain with nothing hardcoded.
 - **Everything else** is served from `public/` via the `ASSETS` binding.
 
-The clone (`index.html`) hides the idiot layer under a normal-looking storefront and detonates on **Add to cart**; the seizure page (`seized.html`) hides it under the `#seized` overlay and detonates on the first gesture. Both swap the title/favicon and share the same audio/popup engine. To point the casino door at the Worker, add a `casino.` DNS record for your domain (e.g. `casino.uwutoowo.com`) alongside the apex.
+The clone (`index.html`) hides the idiot layer under a normal-looking storefront and detonates on **Add to cart**; the seizure page (`seized.html`) hides it under the `#seized` overlay and detonates on the first gesture. Both swap the title/favicon and share the same audio/popup engine.
+
+**Wiring the domains.** Point both the apex (`uwutoowo.com`, a Worker route or custom domain) and the `casino.` subdomain at the Worker. Because the Worker itself does the pre-cutover redirect, you can **delete any standalone Cloudflare Redirect Rule** that used to send the apex to youtooz — the Worker carries it until the cutover instant, then flips to the clone on its own. To adjust the flip time without a redeploy, set a `CUTOVER_ISO` var on the Worker; to roll back after cutover, re-add the redirect rule (rules run before Workers, so it wins instantly).
 
 </details>
 
