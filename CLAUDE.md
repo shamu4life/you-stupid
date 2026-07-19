@@ -61,7 +61,11 @@ npm run dev   # http://localhost:8787
 
 ## Deploy
 
-Cloudflare Git integration auto-deploys `main` on push. Manual deploy: `npm run deploy`. Preview URLs appear as PR comments from the Cloudflare bot.
+Cloudflare Git integration builds `main` on push. Manual deploy: `npm run deploy`. Preview URLs appear as PR comments from the Cloudflare bot. **Gotcha:** a `main` build can land as an uploaded *version* without being promoted to the live production deployment — if `you-stupid`'s `modified_on` / Deployments tab doesn't advance after a merge, promote it manually (Workers & Pages → you-stupid → Deployments) or `npm run deploy`. Verify a promotion by requesting a new-deploy-only asset on a wired domain (e.g. `https://casino.uwutoowo.com/images/uwo1.png` → 200).
+
+## Domains
+
+The apex (`uwutoowo.com`) and the `casino.` subdomain are both Worker routes/custom domains (managed in the dashboard; `wrangler.toml` `routes` stays commented out). The Worker handles the apex's pre-cutover redirect itself, so **no standalone Cloudflare Redirect Rule is needed** — deleting it hands the apex fully to the Worker. Re-adding such a rule is the instant rollback (rules run before Workers).
 
 ## Workflow
 
