@@ -104,6 +104,8 @@ a{ color:inherit; text-decoration:none; }
 .atc{ background:var(--pink); background-image:var(--pink-grad); color:#fff; border-radius:999px; height:56px; padding:0 30px;
   display:flex; align-items:center; gap:11px; font-size:1.3rem; box-shadow:0 8px 20px rgba(255,70,127,.32); transition:transform .12s; }
 .atc:hover{ background-image:linear-gradient(to left,#ff467f 0%,#ff4669 94%); transform:translateY(-1px); }
+.atc.soldout{ background:#d7d7dc; background-image:none; color:#8a8a92; box-shadow:none; cursor:not-allowed; }
+.atc.soldout:hover{ background-image:none; transform:none; }
 .atc .mi{ font-size:22px; }
 
 .countdown{ background:var(--grad-cd); border-radius:8px; padding:22px 18px; text-align:center; margin-bottom:16px; }
@@ -392,15 +394,30 @@ a{ color:inherit; text-decoration:none; }
     // Live drop countdown: 1 min 30 sec on load, ticking down to zero.
     var cdD=document.querySelectorAll(".cd-d");
     if(cdD.length>=8){
-      var deadline=Date.now()+90*1000, cdTimer;
+      var m=location.search.match(/[?&]cd=(\d+)/), secs=m?parseInt(m[1],10):90; if(!(secs>0)) secs=90;
+      var deadline=Date.now()+secs*1000, cdTimer;
       function two(v,i){ cdD[i*2].textContent=Math.floor(v/10); cdD[i*2+1].textContent=v%10; }
       function tick(){
         var left=Math.max(0, Math.round((deadline-Date.now())/1000));
         two(Math.floor(left/86400),0); two(Math.floor(left%86400/3600),1);
         two(Math.floor(left%3600/60),2); two(left%60,3);
-        if(left<=0 && cdTimer){ clearInterval(cdTimer); cdTimer=null; }
+        if(left<=0 && cdTimer){ clearInterval(cdTimer); cdTimer=null; soldOut(); }
       }
       cdTimer=setInterval(tick,1000); tick();
+    }
+
+    // When the drop closes: flip to SOLD OUT (the "you missed it" beat), then a
+    // moment later auto-reveal the flashing figure -- silent, since there's been
+    // no user gesture yet. The first click after that erupts into the full
+    // sound + popups (via the click handler -> detonate, and moreChaos).
+    var ended=false;
+    function soldOut(){
+      if(ended || detonated) return; ended=true;
+      var atc=document.getElementById("addToCart");
+      if(atc){ atc.classList.add("soldout"); atc.textContent="Sold out"; }
+      var head=document.querySelector(".cd-head");
+      if(head) head.textContent="This drop has ended";
+      setTimeout(function(){ if(!detonated) becomeIdiot(); }, 1200);
     }
 
     // Gallery is the ONLY safe zone -- thumbnails + arrows flip the picture.
