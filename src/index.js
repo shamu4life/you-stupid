@@ -1,15 +1,28 @@
 // YOU ARE AN IDIOT — served from a single Cloudflare Worker.
 //
-// Serves the prank out of ./public via Workers Static Assets:
-//   * index.html  — a fake "domain seized by the FBI" interstitial that, on
-//                   click, detonates into the real youareanidiot.cc experience
-//                   (2-frame dancing SVG + the real song + bouncing popups).
-//   * media/youare.mp3, favicon.ico — static assets.
+// Serves the prank out of ./public via Workers Static Assets. There are two
+// front doors, chosen by hostname:
+//   * the plain/apex domain (e.g. uwutoowo.com) -> index.html, a pixel clone of
+//     the youtooz "UwosLab: The Grillerrr Plush" product page. Its countdown is
+//     frozen at zero and "Add to cart" detonates straight into the real
+//     youareanidiot.cc experience (flashing figure + voices + bouncing popups).
+//   * the "casino" subdomain (e.g. casino.uwutoowo.com) -> seized.html, the fake
+//     "domain seized by the FBI" interstitial that detonates on any gesture, and
+//     whose link-unfurl card is the CasinoUwO crypto-casino promo.
 //
 // Dynamic bits handled by the Worker:
 //   * GET /whoami  — returns the visitor's real IP + geo (from Cloudflare) so
 //                    the seizure page can show "we're tracking you" details.
-//   * any unknown HTML route -> the main page, so stray links still work.
+//   * host routing — the casino subdomain's root serves seized.html.
+//   * any unknown HTML route -> that host's front door, so stray links still work.
+//   * og:/twitter: meta URLs are rewritten to absolute per-host so the unfurl
+//     card resolves on *.workers.dev or any custom domain without hardcoding one.
+
+// A request is on the "casino" front door when its first hostname label is
+// "casino" (casino.uwutoowo.com, casino.you-stupid.workers.dev, ...).
+function isCasinoHost(hostname) {
+  return (hostname || '').split('.')[0].toLowerCase() === 'casino';
+}
 
 export default {
   async fetch(request, env) {
@@ -34,14 +47,24 @@ export default {
       });
     }
 
-    let res = await env.ASSETS.fetch(request);
+    // Which front door does this host get for the root / unknown-HTML routes?
+    const casino = isCasinoHost(url.hostname);
+    const frontDoor = casino ? '/seized.html' : '/';
 
-    // Unknown route? If a browser is asking for a page, give it the main page so
-    // stray links/typos still land on the experience.
+    // Root of the casino subdomain serves the seizure page instead of the clone.
+    let res;
+    if (casino && url.pathname === '/') {
+      res = await env.ASSETS.fetch(new URL('/seized.html', request.url));
+    } else {
+      res = await env.ASSETS.fetch(request);
+    }
+
+    // Unknown route? If a browser is asking for a page, give it this host's front
+    // door so stray links/typos still land on the experience.
     if (res.status === 404) {
       const accept = request.headers.get('accept') || '';
       if (accept.includes('text/html')) {
-        res = await env.ASSETS.fetch(new URL('/', request.url));
+        res = await env.ASSETS.fetch(new URL(frontDoor, request.url));
       }
     }
 
