@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>UwosLab: The Grillerrr Plush (9in) &ndash; Youtooz Collectibles</title>
-<link id="favicon" rel="icon" href="/images/uwo1.png">
+<link id="favicon" rel="icon" href="/images/youtooz-logo.svg">
 <!-- link unfurl card (paths absolutized per-host by the Worker) -->
 <meta property="og:type" content="product">
 <meta property="og:site_name" content="Youtooz Collectibles">
@@ -26,149 +26,157 @@
 <meta name="twitter:description" content="Nothing beats a good burger and we've got the best cook on the grill! Uwoslab's summer plush is back at Youtooz. $29.99 USD.">
 <meta name="twitter:image" content="/images/uwo_og.png">
 <style>
+/* --- youtooz webfonts (self-hosted, mirrored from the real theme) --- */
+@font-face{font-family:'Inter var';font-style:normal;font-weight:100 900;font-display:swap;src:url('/fonts/inter-var.woff2') format('woff2');}
+@font-face{font-family:'Luckiest Guy';font-style:normal;font-weight:400;font-display:swap;src:url('/fonts/luckiestguy.woff') format('woff');}
+@font-face{font-family:'Material Icons';font-style:normal;font-weight:400;font-display:block;src:url('/fonts/material-icons.woff2') format('woff2');}
+
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
-  --ink:#111114; --muted:#6b6b74; --line:#e7e7ea; --bg:#ffffff;
-  --yellow:#ffd400; --yellow-ink:#111114; --accent:#ff4d4d;
+  --bg:#ffffff; --ink:#111114; --muted:#71717a; --line:#ececef; --panel:#f5f5f6;
+  --ink-2:#26262b; --star:#ffb300;
 }
-html,body{width:100%;background:var(--bg);color:var(--ink);
-  font-family:"Poppins","Nunito Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  -webkit-font-smoothing:antialiased;}
-body{overflow-x:hidden;}
-a{color:inherit;text-decoration:none;}
-img{display:block;max-width:100%;}
-button{font-family:inherit;cursor:pointer;}
+html{ -webkit-text-size-adjust:100%; }
+body{ background:var(--bg); color:var(--ink);
+  font-family:'Inter var','Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  font-feature-settings:'cv02','cv03','cv04','cv11'; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+a{ color:inherit; text-decoration:none; }
+img{ display:block; max-width:100%; }
+button{ font-family:inherit; cursor:pointer; }
+.mi{ font-family:'Material Icons'; font-weight:normal; font-style:normal; line-height:1; letter-spacing:normal;
+  text-transform:none; white-space:nowrap; direction:ltr; -webkit-font-feature-settings:'liga'; -webkit-font-smoothing:antialiased; }
+.display{ font-family:'Luckiest Guy','Inter var',cursive; font-weight:400; letter-spacing:.01em; }
 
-/* ---- top bar + header ---- */
-.announce{background:var(--ink);color:#fff;text-align:center;font-size:.74rem;letter-spacing:.14em;
-  text-transform:uppercase;padding:8px 12px;font-weight:600;}
-header.site{position:sticky;top:0;z-index:100;background:#fff;border-bottom:1px solid var(--line);}
-.hdr-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;
-  gap:16px;padding:14px 20px;}
-.hdr-nav{display:flex;gap:22px;font-weight:600;font-size:.86rem;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);}
-.hdr-nav a:hover{color:var(--ink);}
-.brand{font-weight:800;font-size:1.7rem;letter-spacing:-.02em;text-transform:lowercase;}
-.brand b{color:var(--ink);} .brand i{font-style:normal;position:relative;}
-.brand .dot{color:var(--yellow);}
-.hdr-icons{display:flex;gap:18px;align-items:center;color:var(--ink);}
-.hdr-icons .ic{width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;position:relative;}
-.hdr-icons .badge{position:absolute;top:-7px;right:-9px;background:var(--yellow);color:#111;border-radius:999px;
-  font-size:.62rem;font-weight:800;min-width:16px;height:16px;display:flex;align-items:center;justify-content:center;padding:0 4px;}
-@media(max-width:820px){.hdr-nav{display:none;}}
+/* --- announcement + header --- */
+.announce{ background:var(--ink); color:#fff; text-align:center; font-size:.72rem; letter-spacing:.16em;
+  text-transform:uppercase; font-weight:600; padding:9px 12px; }
+header.site{ position:sticky; top:0; z-index:100; background:#fff; border-bottom:1px solid var(--line); }
+.hdr{ max-width:1220px; margin:0 auto; display:grid; grid-template-columns:1fr auto 1fr; align-items:center;
+  gap:16px; padding:16px 22px; }
+.hdr-nav{ display:flex; gap:24px; font-size:.82rem; font-weight:600; text-transform:uppercase; letter-spacing:.04em; color:var(--ink); }
+.hdr-nav a{ opacity:.82; } .hdr-nav a:hover{ opacity:1; }
+.brand{ justify-self:center; display:flex; align-items:center; }
+.brand img{ height:42px; width:auto; }
+.hdr-icons{ justify-self:end; display:flex; gap:20px; align-items:center; }
+.hdr-icons .mi{ font-size:25px; color:var(--ink); }
+.hdr-icons .cart{ position:relative; }
+.hdr-icons .badge{ position:absolute; top:-8px; right:-9px; background:var(--ink); color:#fff; border-radius:999px;
+  font-size:.6rem; font-weight:800; min-width:16px; height:16px; display:flex; align-items:center; justify-content:center; padding:0 4px; }
+@media(max-width:860px){ .hdr{ grid-template-columns:auto 1fr auto; } .hdr-nav{ display:none; } .brand{ justify-self:start; } }
 
-/* ---- product ---- */
-.wrap{max-width:1200px;margin:0 auto;padding:22px 20px 60px;}
-.crumbs{font-size:.78rem;color:var(--muted);margin:6px 0 22px;font-weight:500;}
-.crumbs a:hover{color:var(--ink);text-decoration:underline;}
-.product{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:48px;align-items:start;}
-@media(max-width:900px){.product{grid-template-columns:1fr;gap:26px;}}
+/* --- product --- */
+.wrap{ max-width:1220px; margin:0 auto; padding:20px 22px 64px; }
+.crumbs{ font-size:.78rem; color:var(--muted); margin:8px 0 24px; font-weight:500; }
+.crumbs a:hover{ color:var(--ink); }
+.product{ display:grid; grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr); gap:52px; align-items:start; }
+@media(max-width:900px){ .product{ grid-template-columns:1fr; gap:28px; } }
 
-.gallery{position:sticky;top:96px;}
-@media(max-width:900px){.gallery{position:static;}}
-.stage-img{border:1px solid var(--line);border-radius:18px;background:#f6f6f7;overflow:hidden;aspect-ratio:1/1;
-  display:flex;align-items:center;justify-content:center;}
-.stage-img img{width:100%;height:100%;object-fit:contain;}
-.thumbs{display:flex;gap:12px;margin-top:14px;flex-wrap:wrap;}
-.thumbs button{width:74px;height:74px;border:2px solid var(--line);border-radius:12px;overflow:hidden;background:#f6f6f7;padding:0;}
-.thumbs button.active{border-color:var(--ink);}
-.thumbs img{width:100%;height:100%;object-fit:cover;}
+.gallery{ position:sticky; top:104px; }
+@media(max-width:900px){ .gallery{ position:static; } }
+.stage-img{ background:var(--panel); border-radius:26px; overflow:hidden; aspect-ratio:1/1;
+  display:flex; align-items:center; justify-content:center; }
+.stage-img img{ width:92%; height:92%; object-fit:contain; }
+.thumbs{ display:flex; gap:12px; margin-top:14px; flex-wrap:wrap; }
+.thumbs button{ width:78px; height:78px; border:2px solid transparent; background:var(--panel); border-radius:16px;
+  overflow:hidden; padding:0; transition:border-color .12s; }
+.thumbs button.active{ border-color:var(--ink); }
+.thumbs img{ width:100%; height:100%; object-fit:contain; }
 
-.pinfo .vendor{font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
-.pinfo h1{font-size:2rem;line-height:1.15;font-weight:800;margin:8px 0 12px;letter-spacing:-.01em;}
-.stars{display:flex;align-items:center;gap:8px;color:#f7b500;font-size:.95rem;margin-bottom:14px;}
-.stars .count{color:var(--muted);font-size:.8rem;font-weight:600;}
-.price{font-size:1.55rem;font-weight:800;margin-bottom:6px;}
-.price .cur{font-size:.9rem;color:var(--muted);font-weight:700;margin-left:6px;letter-spacing:.05em;}
-.tax{font-size:.76rem;color:var(--muted);margin-bottom:20px;}
+.vendor{ font-size:.72rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+h1.title{ font-size:2.35rem; line-height:1.02; margin:12px 0 14px; color:var(--ink); }
+.rating{ display:flex; align-items:center; gap:9px; margin-bottom:18px; }
+.rating .stars{ color:var(--star); font-size:1.05rem; letter-spacing:2px; display:inline-flex; }
+.rating .n{ color:var(--muted); font-size:.8rem; font-weight:600; }
+.price{ font-size:1.5rem; font-weight:800; letter-spacing:-.01em; }
+.price .cur{ font-size:.82rem; color:var(--muted); font-weight:700; margin-left:6px; }
+.tax{ font-size:.76rem; color:var(--muted); margin:6px 0 22px; }
 
-/* countdown banner (locked at zero) */
-.countdown{border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:22px;
-  background:#fffdf2;}
-.countdown .cd-desc{font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#b98900;
-  display:flex;align-items:center;gap:8px;margin-bottom:12px;}
-.countdown .cd-desc .rec{width:8px;height:8px;border-radius:50%;background:var(--accent);display:inline-block;
-  animation:pulse 1.1s steps(1) infinite;}
-@keyframes pulse{50%{opacity:.25}}
-.cd-row{display:flex;gap:10px;}
-.cd-cell{flex:1;background:#111114;color:#fff;border-radius:12px;padding:12px 6px;text-align:center;}
-.cd-num{font-size:1.7rem;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;}
-.cd-lbl{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:#c9c9cf;margin-top:6px;}
+/* countdown (frozen at zero) */
+.countdown{ border:1.5px solid var(--line); border-radius:20px; padding:16px 18px; margin-bottom:22px; }
+.cd-desc{ display:flex; align-items:center; gap:9px; font-size:.82rem; font-weight:700; color:var(--ink);
+  text-transform:uppercase; letter-spacing:.03em; margin-bottom:13px; }
+.cd-desc .rec{ width:8px; height:8px; border-radius:50%; background:#ff3b3b; display:inline-block; animation:pulse 1.1s steps(1) infinite; }
+@keyframes pulse{ 50%{opacity:.25} }
+.cd-row{ display:flex; gap:10px; }
+.cd-cell{ flex:1; background:var(--ink); color:#fff; border-radius:14px; padding:13px 6px; text-align:center; }
+.cd-num{ font-size:1.8rem; line-height:1; }
+.cd-lbl{ font-size:.6rem; text-transform:uppercase; letter-spacing:.12em; color:#b9b9c2; margin-top:7px; font-weight:600; }
 
-.preorder{font-size:.82rem;color:var(--muted);margin-bottom:20px;line-height:1.5;}
-.preorder strong{color:var(--ink);text-transform:uppercase;}
+.preorder{ font-size:.82rem; color:var(--muted); line-height:1.5; margin-bottom:22px; }
+.preorder strong{ color:var(--ink); text-transform:uppercase; letter-spacing:.02em; }
 
-.buy-row{display:flex;gap:12px;align-items:stretch;margin-bottom:16px;}
-.qty{display:flex;align-items:center;border:1px solid var(--line);border-radius:12px;overflow:hidden;}
-.qty button{width:46px;height:56px;border:0;background:#fff;font-size:1.2rem;font-weight:700;color:var(--ink);}
-.qty button:hover{background:#f4f4f5;}
-.qty input{width:44px;height:56px;border:0;text-align:center;font-size:1rem;font-weight:700;font-family:inherit;}
-.qty input:focus{outline:none;}
-.atc{flex:1;border:0;border-radius:12px;background:var(--ink);color:#fff;font-weight:800;font-size:.95rem;
-  text-transform:uppercase;letter-spacing:.05em;display:flex;align-items:center;justify-content:center;gap:10px;
-  min-height:56px;transition:transform .12s ease,background .12s ease;}
-.atc:hover{background:#000;transform:translateY(-1px);}
-.atc:active{transform:translateY(0);}
-.atc svg{width:20px;height:20px;}
-.buy-note{display:flex;gap:18px;flex-wrap:wrap;font-size:.78rem;color:var(--muted);margin-bottom:26px;}
-.buy-note span{display:flex;align-items:center;gap:7px;font-weight:600;}
-.buy-note svg{width:16px;height:16px;color:var(--muted);}
+.buy-row{ display:flex; gap:12px; align-items:stretch; margin-bottom:16px; }
+.qty{ display:flex; align-items:center; border:1.5px solid var(--line); border-radius:16px; overflow:hidden; }
+.qty button{ width:48px; height:60px; border:0; background:#fff; color:var(--ink); display:flex; align-items:center; justify-content:center; }
+.qty button .mi{ font-size:26px; }
+.qty button:hover{ background:var(--panel); }
+.qty input{ width:42px; height:60px; border:0; text-align:center; font-size:1.05rem; font-weight:700; font-family:inherit; color:var(--ink); }
+.qty input:focus{ outline:none; }
+.atc{ flex:1; border:0; border-radius:16px; background:var(--ink); color:#fff; min-height:60px;
+  display:flex; align-items:center; justify-content:center; gap:11px; font-size:1.35rem;
+  transition:transform .12s ease, background .12s ease; }
+.atc:hover{ background:#000; transform:translateY(-1px); }
+.atc:active{ transform:translateY(0); }
+.atc .mi{ font-size:24px; }
+.buy-note{ display:flex; flex-wrap:wrap; gap:8px 20px; font-size:.8rem; color:var(--muted); margin-bottom:28px; }
+.buy-note span{ display:flex; align-items:center; gap:7px; font-weight:600; }
+.buy-note .mi{ font-size:19px; color:var(--ink); }
 
-.section{border-top:1px solid var(--line);padding-top:22px;margin-top:6px;}
-.section h2{font-size:1.05rem;font-weight:800;margin-bottom:10px;}
-.section h3{font-size:.95rem;font-weight:800;margin:18px 0 8px;}
-.section p{font-size:.92rem;line-height:1.7;color:#3a3a42;margin-bottom:10px;}
+.section{ border-top:1px solid var(--line); padding-top:24px; margin-top:8px; }
+.section h2{ font-size:1.25rem; margin-bottom:12px; color:var(--ink); }
+.section h3{ font-size:1.05rem; margin:20px 0 9px; color:var(--ink); }
+.section p{ font-size:.93rem; line-height:1.75; color:var(--ink-2); margin-bottom:11px; }
 
-/* ---- footer ---- */
-footer.site{border-top:1px solid var(--line);background:#fafafa;margin-top:40px;}
-.ft-inner{max-width:1200px;margin:0 auto;padding:36px 20px;display:flex;flex-wrap:wrap;gap:32px;justify-content:space-between;}
-.ft-col h4{font-size:.74rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:12px;}
-.ft-col a{display:block;font-size:.86rem;color:#3a3a42;margin-bottom:8px;}
-.ft-col a:hover{color:var(--ink);}
-.ft-bottom{border-top:1px solid var(--line);text-align:center;font-size:.76rem;color:var(--muted);padding:16px;}
+/* --- footer --- */
+footer.site{ border-top:1px solid var(--line); background:var(--panel); margin-top:52px; }
+.ft{ max-width:1220px; margin:0 auto; padding:44px 22px 20px; display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:32px; }
+@media(max-width:760px){ .ft{ grid-template-columns:1fr 1fr; gap:26px; } }
+.ft-brand img{ height:46px; margin-bottom:14px; }
+.ft-brand p{ font-size:.84rem; color:var(--muted); line-height:1.6; max-width:280px; }
+.ft-news{ display:flex; margin-top:16px; max-width:300px; border:1.5px solid var(--line); border-radius:12px; overflow:hidden; background:#fff; }
+.ft-news input{ flex:1; border:0; padding:0 14px; font-family:inherit; font-size:.85rem; }
+.ft-news input:focus{ outline:none; }
+.ft-news button{ border:0; background:var(--ink); color:#fff; padding:0 18px; font-size:.92rem; }
+.ft-col h4{ font-size:.72rem; text-transform:uppercase; letter-spacing:.12em; color:var(--muted); margin-bottom:14px; }
+.ft-col a{ display:block; font-size:.86rem; color:var(--ink-2); margin-bottom:10px; }
+.ft-col a:hover{ color:var(--ink); }
+.ft-bottom{ border-top:1px solid var(--line); text-align:center; font-size:.76rem; color:var(--muted); padding:18px; }
 
-/* ---- idiot overlay (detonation) ---- */
-.idiot{position:fixed;inset:0;z-index:2147483000;background:#fff;display:none;
-  justify-content:center;align-items:center;}
-.idiot.live{display:flex;}
-.flash{position:absolute;inset:0;background:#fff;display:flex;flex-direction:column;justify-content:center;
-  align-items:center;gap:5vh;animation:flashinv 666ms step-end infinite;}
-@keyframes flashinv{0%{filter:invert(0)}50%{filter:invert(1)}100%{filter:invert(0)}}
-.yai{font-family:"Times New Roman",Times,serif;color:#000;font-size:10vw;line-height:1;white-space:nowrap;}
-.faces{display:flex;gap:7vw;align-items:center;}
-.faces img{width:13vw;max-width:150px;height:auto;-webkit-user-select:none;user-select:none;}
-.sp{position:absolute;left:0;top:0;will-change:transform;}
-.sp>.fb,.sp>.fw{position:absolute;inset:0;background:center/contain no-repeat;background-image:url("/images/emote.png");}
-.sp>.fw{filter:invert(1);}
-@keyframes key-black{from,to{visibility:visible}50%{visibility:hidden}}
-@keyframes key-white{from,to{visibility:hidden}50%{visibility:visible}}
-.frame-black{animation:key-black step-end 666ms infinite;}
-.frame-white{animation:key-white step-end 666ms infinite;}
+/* --- idiot overlay (detonation) --- */
+.idiot{ position:fixed; inset:0; z-index:2147483000; background:#fff; display:none; justify-content:center; align-items:center; }
+.idiot.live{ display:flex; }
+.flash{ position:absolute; inset:0; background:#fff; display:flex; flex-direction:column; justify-content:center;
+  align-items:center; gap:5vh; animation:flashinv 666ms step-end infinite; }
+@keyframes flashinv{ 0%{filter:invert(0)} 50%{filter:invert(1)} 100%{filter:invert(0)} }
+.yai{ font-family:'Times New Roman',Times,serif; color:#000; font-size:10vw; line-height:1; white-space:nowrap; }
+.faces{ display:flex; gap:7vw; align-items:center; }
+.faces img{ width:13vw; max-width:150px; height:auto; -webkit-user-select:none; user-select:none; }
+.sp{ position:absolute; left:0; top:0; will-change:transform; }
+.sp>.fb,.sp>.fw{ position:absolute; inset:0; background:center/contain no-repeat; background-image:url("/images/emote.png"); }
+.sp>.fw{ filter:invert(1); }
+@keyframes key-black{ from,to{visibility:visible} 50%{visibility:hidden} }
+@keyframes key-white{ from,to{visibility:hidden} 50%{visibility:visible} }
+.frame-black{ animation:key-black step-end 666ms infinite; }
+.frame-white{ animation:key-white step-end 666ms infinite; }
 </style>
 </head>
 <body>
 
-<div class="announce">Ships Worldwide &nbsp;&bull;&nbsp; Summer Event 2026 is live &nbsp;&bull;&nbsp; Free tracking on every order</div>
+<div class="announce">Ships Worldwide &nbsp;&middot;&nbsp; Summer Event 2026 &nbsp;&middot;&nbsp; Free tracking on every order</div>
 
 <header class="site">
-  <div class="hdr-inner">
+  <div class="hdr">
     <nav class="hdr-nav">
       <a href="#" onclick="return false">Shop</a>
       <a href="#" onclick="return false">Plush</a>
       <a href="#" onclick="return false">Vinyl</a>
-      <a href="#" onclick="return false">Live</a>
+      <a href="#" onclick="return false">Sale</a>
     </nav>
-    <a href="#" onclick="return false" class="brand"><b>youtooz</b><span class="dot">.</span></a>
+    <a href="#" onclick="return false" class="brand" aria-label="Youtooz"><img src="/images/youtooz-logo.svg" alt="Youtooz"></a>
     <div class="hdr-icons">
-      <span class="ic" title="Search">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      </span>
-      <span class="ic" title="Account">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
-      </span>
-      <span class="ic" title="Cart">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6h15l-1.5 9h-12z"/><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M6 6 5 3H2"/></svg>
-        <span class="badge" id="cart-badge">0</span>
-      </span>
+      <i class="mi" title="Search">&#xe8b6;</i>
+      <i class="mi" title="Account">&#xe7fd;</i>
+      <span class="cart"><i class="mi" title="Cart">&#xe8cb;</i><span class="badge" id="cart-badge">0</span></span>
     </div>
   </div>
 </header>
@@ -192,18 +200,18 @@ footer.site{border-top:1px solid var(--line);background:#fafafa;margin-top:40px;
     <!-- info -->
     <div class="pinfo">
       <div class="vendor">Youtooz Collectibles</div>
-      <h1>UwosLab: The Grillerrr Plush (9in)</h1>
-      <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733; <span class="count">(212 reviews)</span></div>
+      <h1 class="title display">UwosLab: The Grillerrr Plush (9in)</h1>
+      <div class="rating"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span> <span class="n">212 reviews</span></div>
       <div class="price">$29.99 <span class="cur">USD</span></div>
       <div class="tax">Tax included. Shipping calculated at checkout.</div>
 
       <div class="countdown" aria-label="Availability countdown">
         <div class="cd-desc"><span class="rec"></span> Only available until July 19th, 12pm PT</div>
         <div class="cd-row">
-          <div class="cd-cell"><div class="cd-num">00</div><div class="cd-lbl">days</div></div>
-          <div class="cd-cell"><div class="cd-num">00</div><div class="cd-lbl">hours</div></div>
-          <div class="cd-cell"><div class="cd-num">00</div><div class="cd-lbl">minutes</div></div>
-          <div class="cd-cell"><div class="cd-num">00</div><div class="cd-lbl">seconds</div></div>
+          <div class="cd-cell"><div class="cd-num display">00</div><div class="cd-lbl">days</div></div>
+          <div class="cd-cell"><div class="cd-num display">00</div><div class="cd-lbl">hours</div></div>
+          <div class="cd-cell"><div class="cd-num display">00</div><div class="cd-lbl">minutes</div></div>
+          <div class="cd-cell"><div class="cd-num display">00</div><div class="cd-lbl">seconds</div></div>
         </div>
       </div>
 
@@ -211,26 +219,23 @@ footer.site{border-top:1px solid var(--line);background:#fafafa;margin-top:40px;
 
       <div class="buy-row">
         <div class="qty">
-          <button type="button" id="qtyMinus" aria-label="Decrease quantity">&minus;</button>
+          <button type="button" id="qtyMinus" aria-label="Decrease quantity"><i class="mi">&#xe15b;</i></button>
           <input id="qtyInput" type="text" inputmode="numeric" value="1" aria-label="Quantity">
-          <button type="button" id="qtyPlus" aria-label="Increase quantity">+</button>
+          <button type="button" id="qtyPlus" aria-label="Increase quantity"><i class="mi">&#xe145;</i></button>
         </div>
-        <button class="atc" id="addToCart" type="button">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6h15l-1.5 9h-12z"/><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M6 6 5 3H2"/></svg>
-          Add to cart
-        </button>
+        <button class="atc display" id="addToCart" type="button"><i class="mi">&#xe8cb;</i> Add to cart</button>
       </div>
 
       <div class="buy-note">
-        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h13v10H3z"/><path d="M16 10h4l1 3v4h-5z"/><circle cx="7" cy="18" r="1.5"/><circle cx="18" cy="18" r="1.5"/></svg> Ships Worldwide</span>
-        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg> Secure checkout</span>
-        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7 9 18l-5-5"/></svg> Official Youtooz</span>
+        <span><i class="mi">&#xe558;</i> Ships Worldwide</span>
+        <span><i class="mi">&#xe897;</i> Secure checkout</span>
+        <span><i class="mi">&#xe86c;</i> Official Youtooz</span>
       </div>
 
       <div class="section">
-        <h2>The Plush</h2>
+        <h2 class="display">The Plush</h2>
         <p>Nothing beats a good burger and we&rsquo;ve got the best cook on the grill! Uwoslab&rsquo;s back at Youtooz with a perfectly juicy summer plush! Sitting at 9 inches tall with his legs kicked forward and dressed in two-tone brown shoes, khaki pants, a blue t-shirt and flame-printed apron that says &ldquo;spicy Boi&rdquo; on the chest pocket, he holds a large spatula in his right hand as black shades rest over blushing cheeks and an open mouth while a white chef&rsquo;s hat rests on his grey hair. This plush is packed to the seams with 100% PP cotton and is made of the minky and tricot materials with accents of felt, perfect for cuddling or flipping burgers with!</p>
-        <h3>About UwosLab</h3>
+        <h3 class="display">About UwosLab</h3>
         <p>UwosLab is a mad scientist, Twitch streamer and YouTuber! Bringing the weirdest, wildest and absolutely bonkers creations to life with the power of science, his (completely safe) DIY projects have electrified his nearly 436k YouTube subscribers and 94k Twitch followers!</p>
       </div>
     </div>
@@ -238,34 +243,32 @@ footer.site{border-top:1px solid var(--line);background:#fafafa;margin-top:40px;
 </div>
 
 <footer class="site">
-  <div class="ft-inner">
-    <div class="ft-col">
-      <h4>Shop</h4>
-      <a href="#" onclick="return false">All Products</a>
-      <a href="#" onclick="return false">Plush</a>
-      <a href="#" onclick="return false">Vinyl Figures</a>
-      <a href="#" onclick="return false">Live Now</a>
+  <div class="ft">
+    <div class="ft-brand">
+      <img src="/images/youtooz-logo.svg" alt="Youtooz">
+      <p>Youtooz makes collectible vinyl figures and plush of your favorite online personalities and characters.</p>
+      <form class="ft-news" onsubmit="return false">
+        <input type="email" placeholder="Enter your email" aria-label="Email">
+        <button type="submit" class="display">Join</button>
+      </form>
     </div>
     <div class="ft-col">
       <h4>Help</h4>
-      <a href="#" onclick="return false">Order Status</a>
-      <a href="#" onclick="return false">Shipping</a>
-      <a href="#" onclick="return false">Returns</a>
-      <a href="#" onclick="return false">Contact</a>
+      <a href="#" onclick="return false">Contact Us</a>
+      <a href="#" onclick="return false">Shipping Policy</a>
+      <a href="#" onclick="return false">Track My Order</a>
+      <a href="#" onclick="return false">FAQ</a>
     </div>
     <div class="ft-col">
       <h4>Company</h4>
       <a href="#" onclick="return false">About</a>
-      <a href="#" onclick="return false">Careers</a>
-      <a href="#" onclick="return false">Terms</a>
-      <a href="#" onclick="return false">Privacy</a>
+      <a href="#" onclick="return false">How It&rsquo;s Made</a>
+      <a href="#" onclick="return false">Find My Youtooz</a>
     </div>
     <div class="ft-col">
-      <h4>Stay in the loop</h4>
-      <a href="#" onclick="return false">Instagram</a>
-      <a href="#" onclick="return false">TikTok</a>
-      <a href="#" onclick="return false">X / Twitter</a>
-      <a href="#" onclick="return false">YouTube</a>
+      <h4>Legal</h4>
+      <a href="#" onclick="return false">Terms</a>
+      <a href="#" onclick="return false">Privacy</a>
     </div>
   </div>
   <div class="ft-bottom">&copy; 2026 Youtooz Collectibles. All rights reserved.</div>
