@@ -419,25 +419,40 @@ footer.site{ border-top:1px solid var(--line); background:var(--panel); margin-t
     becomeIdiot();
     window.addEventListener("load", playBall);
   } else {
-    // Storefront wiring: gallery + quantity behave like a real product page.
-    var thumbs=document.getElementById("thumbs");
-    if(thumbs){
-      thumbs.addEventListener("click", function(e){
-        var btn=e.target.closest("button"); if(!btn) return;
-        var src=btn.getAttribute("data-src"); if(!src) return;
-        document.getElementById("mainImg").src=src;
-        var all=thumbs.querySelectorAll("button"); for(var i=0;i<all.length;i++) all[i].classList.remove("active");
-        btn.classList.add("active");
-      });
+    // Live drop countdown: 1 min 30 sec left on load, ticking down to zero.
+    var cdNums=document.querySelectorAll(".cd-num");
+    if(cdNums.length>=4){
+      var deadline=Date.now()+90*1000, cdTimer;
+      function pad(n){ return (n<10?"0":"")+n; }
+      function tick(){
+        var left=Math.max(0, Math.round((deadline-Date.now())/1000));
+        cdNums[0].textContent=pad(Math.floor(left/86400));
+        cdNums[1].textContent=pad(Math.floor(left%86400/3600));
+        cdNums[2].textContent=pad(Math.floor(left%3600/60));
+        cdNums[3].textContent=pad(left%60);
+        if(left<=0 && cdTimer){ clearInterval(cdTimer); cdTimer=null; }
+      }
+      cdTimer=setInterval(tick,1000); tick();
     }
-    var qi=document.getElementById("qtyInput");
-    function q(){ var n=parseInt(qi.value,10); return isNaN(n)?1:Math.max(1,n); }
-    var qm=document.getElementById("qtyMinus"), qp=document.getElementById("qtyPlus");
-    if(qm) qm.addEventListener("click", function(){ qi.value=Math.max(1,q()-1); });
-    if(qp) qp.addEventListener("click", function(){ qi.value=q()+1; });
-    // THE trigger: Add to cart -> straight into you-are-an-idiot.
-    var atc=document.getElementById("addToCart");
-    if(atc) atc.addEventListener("click", detonate);
+
+    // Flipping the gallery pictures is the ONLY safe interaction.
+    var thumbs=document.getElementById("thumbs");
+    function swap(btn){
+      var src=btn.getAttribute("data-src"); if(!src) return;
+      var main=document.getElementById("mainImg"); if(main) main.src=src;
+      var all=thumbs?thumbs.querySelectorAll("button"):[]; for(var i=0;i<all.length;i++) all[i].classList.remove("active");
+      btn.classList.add("active");
+    }
+    // Every other click -- a nav/footer link, a header icon, the quantity
+    // stepper, the newsletter, and of course Add to cart -- flips straight
+    // into the idiot page. Only the thumbnails stay benign (they flip pics).
+    document.addEventListener("click", function(e){
+      var t=e.target;
+      var tb=t.closest?t.closest("#thumbs button"):null;
+      if(tb){ swap(tb); return; }
+      var hit=t.closest?t.closest("a,button,input,.mi"):null;
+      if(hit){ e.preventDefault(); detonate(); }
+    }, false);
   }
 
   // After the reveal, any further press stacks more voices + popups (matches the
