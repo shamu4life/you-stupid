@@ -33,114 +33,112 @@
 
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
-  --bg:#ffffff; --ink:#111114; --muted:#71717a; --line:#ececef; --panel:#f5f5f6;
-  --ink-2:#26262b; --star:#ffb300;
+  --pink:#ff467f; --pink-grad:linear-gradient(to right,#ff467f 0%,#ff4669 94%);
+  --ink:#232323; --muted:#aeaeae; --line:#e6e8ea; --panel:#f4f4f6;
+  /* per-product "env" theme gradient, straight from the youtooz page: #4e549f -> #d07260 */
+  --grad-bg:linear-gradient(120deg,#4e549f 0%,#d07260 100%);
+  --grad-title:linear-gradient(to right,#4e549f 0%,#d07260 100%);
+  --grad-cd:linear-gradient(225deg,#4e549f 0%,#d07260 100%);
 }
 html{ -webkit-text-size-adjust:100%; }
-body{ background:var(--bg); color:var(--ink);
+body{ min-height:100vh; background:var(--grad-bg); background-attachment:fixed; color:var(--ink);
   font-family:'Inter var','Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
-  font-feature-settings:'cv02','cv03','cv04','cv11'; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
-a{ color:inherit; text-decoration:none; }
+  -webkit-font-smoothing:antialiased; overflow-x:hidden; }
 img{ display:block; max-width:100%; }
-button{ font-family:inherit; cursor:pointer; }
-.mi{ font-family:'Material Icons'; font-weight:normal; font-style:normal; line-height:1; letter-spacing:normal;
-  text-transform:none; white-space:nowrap; direction:ltr; -webkit-font-feature-settings:'liga'; -webkit-font-smoothing:antialiased; }
-.display{ font-family:'Luckiest Guy','Inter var',cursive; font-weight:400; letter-spacing:.01em; }
+button{ font-family:inherit; cursor:pointer; background:none; border:0; }
+a{ color:inherit; text-decoration:none; }
+.mi{ font-family:'Material Icons'; font-weight:normal; font-style:normal; line-height:1; white-space:nowrap;
+  direction:ltr; -webkit-font-feature-settings:'liga'; -webkit-font-smoothing:antialiased; }
+.display{ font-family:'Luckiest Guy','Inter var',cursive; font-weight:400; letter-spacing:.012em; }
 
-/* --- announcement + header --- */
-.announce{ background:var(--ink); color:#fff; text-align:center; font-size:.72rem; letter-spacing:.16em;
-  text-transform:uppercase; font-weight:600; padding:9px 12px; }
-header.site{ position:sticky; top:0; z-index:100; background:#fff; border-bottom:1px solid var(--line); }
-.hdr{ max-width:1220px; margin:0 auto; display:grid; grid-template-columns:1fr auto 1fr; align-items:center;
-  gap:16px; padding:16px 22px; }
-.hdr-nav{ display:flex; gap:24px; font-size:.82rem; font-weight:600; text-transform:uppercase; letter-spacing:.04em; color:var(--ink); }
-.hdr-nav a{ opacity:.82; } .hdr-nav a:hover{ opacity:1; }
-.brand{ justify-self:center; display:flex; align-items:center; }
-.brand img{ height:42px; width:auto; }
-.hdr-icons{ justify-self:end; display:flex; gap:20px; align-items:center; }
-.hdr-icons .mi{ font-size:25px; color:var(--ink); }
-.hdr-icons .cart{ position:relative; }
-.hdr-icons .badge{ position:absolute; top:-8px; right:-9px; background:var(--ink); color:#fff; border-radius:999px;
-  font-size:.6rem; font-weight:800; min-width:16px; height:16px; display:flex; align-items:center; justify-content:center; padding:0 4px; }
-@media(max-width:860px){ .hdr{ grid-template-columns:auto 1fr auto; } .hdr-nav{ display:none; } .brand{ justify-self:start; } }
+/* --- modal --- */
+.modal{ position:relative; width:min(1180px,96vw); margin:22px auto; background:#fff; border-radius:22px;
+  overflow:hidden; box-shadow:0 30px 90px rgba(20,10,40,.4); }
+.close{ position:absolute; top:16px; right:18px; z-index:6; color:#2a2a2a; }
+.close .mi{ font-size:28px; }
+.pad{ padding:26px 30px; }
+@media(max-width:560px){ .modal{ width:100vw; margin:0; border-radius:0; } .pad{ padding:18px 16px; } }
 
-/* --- product --- */
-.wrap{ max-width:1220px; margin:0 auto; padding:20px 22px 64px; }
-.crumbs{ font-size:.78rem; color:var(--muted); margin:8px 0 24px; font-weight:500; }
-.crumbs a:hover{ color:var(--ink); }
-.product{ display:grid; grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr); gap:52px; align-items:start; }
-@media(max-width:900px){ .product{ grid-template-columns:1fr; gap:28px; } }
+.top{ display:grid; grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr); gap:34px; align-items:start; }
+@media(max-width:860px){ .top{ grid-template-columns:1fr; gap:22px; } }
 
-.gallery{ position:sticky; top:104px; }
-@media(max-width:900px){ .gallery{ position:static; } }
-.stage-img{ background:var(--panel); border-radius:26px; overflow:hidden; aspect-ratio:1/1;
-  display:flex; align-items:center; justify-content:center; }
-.stage-img img{ width:92%; height:92%; object-fit:contain; }
-.thumbs{ display:flex; gap:12px; margin-top:14px; flex-wrap:wrap; }
-.thumbs button{ width:78px; height:78px; border:2px solid transparent; background:var(--panel); border-radius:16px;
-  overflow:hidden; padding:0; transition:border-color .12s; }
-.thumbs button.active{ border-color:var(--ink); }
+/* gallery */
+.gallery{ display:flex; flex-direction:column; }
+.main-wrap{ position:relative; display:flex; align-items:center; justify-content:center; }
+.main-img{ width:100%; aspect-ratio:1/1; object-fit:contain; }
+.badge{ position:absolute; top:2px; left:2px; width:78px; height:78px; z-index:3; display:flex; align-items:center; justify-content:center; }
+.badge svg{ position:absolute; inset:0; width:100%; height:100%; filter:drop-shadow(0 4px 8px rgba(0,0,0,.25)); }
+.badge span{ position:relative; color:#fff; font-size:20px; transform:translateY(1px); }
+.arrow{ position:absolute; top:50%; transform:translateY(-50%); width:44px; height:44px; background:#1b1b1b; color:#fff;
+  display:flex; align-items:center; justify-content:center; border-radius:5px; z-index:2; }
+.arrow .mi{ font-size:24px; }
+.arrow.prev{ left:-10px; } .arrow.next{ right:-10px; }
+.thumbs{ display:flex; gap:12px; margin-top:16px; }
+.thumbs button{ width:76px; height:76px; border:2px solid transparent; border-radius:12px; overflow:hidden; background:var(--panel); padding:0; }
+.thumbs button.active{ border-color:#1b1b1b; }
 .thumbs img{ width:100%; height:100%; object-fit:contain; }
+@media(max-width:860px){
+  .gallery{ display:grid; grid-template-columns:58px 1fr; gap:10px; align-items:start; }
+  .thumbs{ flex-direction:column; margin-top:0; grid-column:1; grid-row:1; }
+  .thumbs button{ width:52px; height:52px; }
+  .main-wrap{ grid-column:2; grid-row:1; }
+  .arrow{ display:none; }
+  .badge{ width:60px; height:60px; } .badge span{ font-size:16px; }
+}
 
-.vendor{ font-size:.72rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
-h1.title{ font-size:2.35rem; line-height:1.02; margin:12px 0 14px; color:var(--ink); }
-.rating{ display:flex; align-items:center; gap:9px; margin-bottom:18px; }
-.rating .stars{ color:var(--star); font-size:1.05rem; letter-spacing:2px; display:inline-flex; }
-.rating .n{ color:var(--muted); font-size:.8rem; font-weight:600; }
-.price{ font-size:1.5rem; font-weight:800; letter-spacing:-.01em; }
-.price .cur{ font-size:.82rem; color:var(--muted); font-weight:700; margin-left:6px; }
-.tax{ font-size:.76rem; color:var(--muted); margin:6px 0 22px; }
+/* info */
+.titlerow{ display:flex; justify-content:space-between; align-items:flex-start; gap:18px; }
+.vendor{ font-family:'Inter var',sans-serif; font-weight:900; font-size:.78rem; letter-spacing:.02em;
+  text-transform:uppercase; color:var(--muted); margin-bottom:5px; }
+.title{ font-size:2.05rem; line-height:1.04;
+  background:var(--grad-title); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.price{ font-size:1.5rem; color:var(--ink); white-space:nowrap; }
+@media(min-width:861px){ .titlerow{ padding-right:44px; } }
+@media(max-width:860px){ .titlerow{ flex-direction:column; gap:6px; } .title{ font-size:1.9rem; } }
 
-/* countdown (frozen at zero) */
-.countdown{ border:1.5px solid var(--line); border-radius:20px; padding:16px 18px; margin-bottom:22px; }
-.cd-desc{ display:flex; align-items:center; gap:9px; font-size:.82rem; font-weight:700; color:var(--ink);
-  text-transform:uppercase; letter-spacing:.03em; margin-bottom:13px; }
-.cd-desc .rec{ width:8px; height:8px; border-radius:50%; background:#ff3b3b; display:inline-block; animation:pulse 1.1s steps(1) infinite; }
-@keyframes pulse{ 50%{opacity:.25} }
-.cd-row{ display:flex; gap:10px; }
-.cd-cell{ flex:1; background:var(--ink); color:#fff; border-radius:14px; padding:13px 6px; text-align:center; }
-.cd-num{ font-size:1.8rem; line-height:1; }
-.cd-lbl{ font-size:.6rem; text-transform:uppercase; letter-spacing:.12em; color:#b9b9c2; margin-top:7px; font-weight:600; }
+.buy{ display:flex; gap:14px; align-items:center; margin:20px 0 22px; flex-wrap:wrap; }
+.qty{ display:flex; align-items:center; gap:12px; border:1.6px solid #e2e2e6; border-radius:999px; height:56px; padding:0 14px 0 22px; }
+.qty .num{ font-size:1.05rem; font-weight:700; min-width:14px; text-align:center; }
+.qty .steppers{ display:flex; flex-direction:column; align-items:center; color:#333; }
+.qty .steppers .mi{ font-size:20px; height:13px; }
+.atc{ background:var(--pink); background-image:var(--pink-grad); color:#fff; border-radius:999px; height:56px; padding:0 30px;
+  display:flex; align-items:center; gap:11px; font-size:1.3rem; box-shadow:0 8px 20px rgba(255,70,127,.32); transition:transform .12s; }
+.atc:hover{ background-image:linear-gradient(to left,#ff467f 0%,#ff4669 94%); transform:translateY(-1px); }
+.atc .mi{ font-size:22px; }
 
-.preorder{ font-size:.82rem; color:var(--muted); line-height:1.5; margin-bottom:22px; }
-.preorder strong{ color:var(--ink); text-transform:uppercase; letter-spacing:.02em; }
+.countdown{ background:var(--grad-cd); border-radius:8px; padding:22px 18px; text-align:center; margin-bottom:16px; }
+.cd-head{ color:#fff; font-size:1.2rem; margin-bottom:15px; text-shadow:0 1px 2px rgba(0,0,0,.15); }
+.cd-row{ display:flex; align-items:flex-start; justify-content:center; gap:7px; }
+.cd-digits{ display:flex; gap:5px; }
+.cd-d{ width:42px; height:60px; background:rgba(0,0,0,.5); border-radius:5px; color:#fff; font-size:2.25rem;
+  display:flex; align-items:flex-end; justify-content:center; padding-bottom:6px; }
+.cd-colon{ color:#fff; font-size:1.8rem; margin-top:14px; }
+.cd-lbl{ font-family:'Inter var',sans-serif; font-weight:900; color:rgba(0,0,0,.5); font-size:.72rem;
+  letter-spacing:.02em; text-transform:uppercase; margin-top:8px; }
+@media(max-width:560px){ .cd-d{ width:32px; height:46px; font-size:1.65rem; } .cd-row{ gap:4px; } .cd-digits{ gap:3px; } .cd-lbl{ font-size:.6rem; } }
 
-.buy-row{ display:flex; gap:12px; align-items:stretch; margin-bottom:16px; }
-.qty{ display:flex; align-items:center; border:1.5px solid var(--line); border-radius:16px; overflow:hidden; }
-.qty button{ width:48px; height:60px; border:0; background:#fff; color:var(--ink); display:flex; align-items:center; justify-content:center; }
-.qty button .mi{ font-size:26px; }
-.qty button:hover{ background:var(--panel); }
-.qty input{ width:42px; height:60px; border:0; text-align:center; font-size:1.05rem; font-weight:700; font-family:inherit; color:var(--ink); }
-.qty input:focus{ outline:none; }
-.atc{ flex:1; border:0; border-radius:16px; background:var(--ink); color:#fff; min-height:60px;
-  display:flex; align-items:center; justify-content:center; gap:11px; font-size:1.35rem;
-  transition:transform .12s ease, background .12s ease; }
-.atc:hover{ background:#000; transform:translateY(-1px); }
-.atc:active{ transform:translateY(0); }
-.atc .mi{ font-size:24px; }
-.buy-note{ display:flex; flex-wrap:wrap; gap:8px 20px; font-size:.8rem; color:var(--muted); margin-bottom:28px; }
-.buy-note span{ display:flex; align-items:center; gap:7px; font-weight:600; }
-.buy-note .mi{ font-size:19px; color:var(--ink); }
+.preorder{ border:1.6px solid var(--line); border-radius:16px; padding:20px; text-align:center; }
+.preorder .h{ color:var(--ink); font-size:.98rem; }
+.preorder .d{ background:var(--pink-grad); -webkit-background-clip:text; background-clip:text; color:transparent; font-size:1.3rem; margin-top:8px; }
 
-.section{ border-top:1px solid var(--line); padding-top:24px; margin-top:8px; }
-.section h2{ font-size:1.25rem; margin-bottom:12px; color:var(--ink); }
-.section h3{ font-size:1.05rem; margin:20px 0 9px; color:var(--ink); }
-.section p{ font-size:.93rem; line-height:1.75; color:var(--ink-2); margin-bottom:11px; }
+/* full-bleed marquee */
+.marquee{ background:var(--pink); background-image:var(--pink-grad); overflow:hidden; white-space:nowrap; }
+.marquee-track{ display:inline-flex; gap:56px; padding:15px 28px; animation:marq 18s linear infinite; }
+.marquee-track span{ color:#fff; font-size:1.25rem; }
+@keyframes marq{ from{transform:translateX(0)} to{transform:translateX(-50%)} }
 
-/* --- footer --- */
-footer.site{ border-top:1px solid var(--line); background:var(--panel); margin-top:52px; }
-.ft{ max-width:1220px; margin:0 auto; padding:44px 22px 20px; display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:32px; }
-@media(max-width:760px){ .ft{ grid-template-columns:1fr 1fr; gap:26px; } }
-.ft-brand img{ height:46px; margin-bottom:14px; }
-.ft-brand p{ font-size:.84rem; color:var(--muted); line-height:1.6; max-width:280px; }
-.ft-news{ display:flex; margin-top:16px; max-width:300px; border:1.5px solid var(--line); border-radius:12px; overflow:hidden; background:#fff; }
-.ft-news input{ flex:1; border:0; padding:0 14px; font-family:inherit; font-size:.85rem; }
-.ft-news input:focus{ outline:none; }
-.ft-news button{ border:0; background:var(--ink); color:#fff; padding:0 18px; font-size:.92rem; }
-.ft-col h4{ font-size:.72rem; text-transform:uppercase; letter-spacing:.12em; color:var(--muted); margin-bottom:14px; }
-.ft-col a{ display:block; font-size:.86rem; color:var(--ink-2); margin-bottom:10px; }
-.ft-col a:hover{ color:var(--ink); }
-.ft-bottom{ border-top:1px solid var(--line); text-align:center; font-size:.76rem; color:var(--muted); padding:18px; }
+/* spec table */
+.spec{ display:grid; grid-template-columns:1fr 1fr; border:1px solid var(--line); border-radius:12px; overflow:hidden; margin:18px 0 6px; }
+.spec .cell{ display:flex; justify-content:space-between; align-items:center; gap:14px; padding:15px 20px; border-bottom:1px solid var(--line); }
+.spec .cell:nth-child(odd){ border-right:1px solid var(--line); }
+.spec .cell .k{ color:var(--muted); font-size:.9rem; }
+.spec .cell .v{ color:var(--ink); font-size:.9rem; text-align:right; }
+@media(max-width:860px){ .spec{ grid-template-columns:1fr; } .spec .cell:nth-child(odd){ border-right:0; } }
+
+.desc{ margin-top:8px; }
+.desc h2{ color:#2a2a2a; font-size:1.5rem; margin:22px 0 12px; }
+.desc p{ color:#232323; font-size:1rem; line-height:1.68; margin-bottom:14px; }
+.desc a{ color:var(--pink); }
 
 /* --- idiot overlay (detonation) --- */
 .idiot{ position:fixed; inset:0; z-index:2147483000; background:#fff; display:none; justify-content:center; align-items:center; }
@@ -162,119 +160,92 @@ footer.site{ border-top:1px solid var(--line); background:var(--panel); margin-t
 </head>
 <body>
 
-<div class="announce">Ships Worldwide &nbsp;&middot;&nbsp; Summer Event 2026 &nbsp;&middot;&nbsp; Free tracking on every order</div>
+<div class="modal">
+  <button class="close" aria-label="Close"><i class="mi">&#xe5cd;</i></button>
 
-<header class="site">
-  <div class="hdr">
-    <nav class="hdr-nav">
-      <a href="#" onclick="return false">Shop</a>
-      <a href="#" onclick="return false">Plush</a>
-      <a href="#" onclick="return false">Vinyl</a>
-      <a href="#" onclick="return false">Sale</a>
-    </nav>
-    <a href="#" onclick="return false" class="brand" aria-label="Youtooz"><img src="/images/youtooz-logo.svg" alt="Youtooz"></a>
-    <div class="hdr-icons">
-      <i class="mi" title="Search">&#xe8b6;</i>
-      <i class="mi" title="Account">&#xe7fd;</i>
-      <span class="cart"><i class="mi" title="Cart">&#xe8cb;</i><span class="badge" id="cart-badge">0</span></span>
+  <div class="pad">
+    <div class="top">
+      <!-- gallery -->
+      <div class="gallery">
+        <div class="main-wrap">
+          <div class="badge"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="b9" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6a5cd6"/><stop offset="1" stop-color="#9b52c6"/></linearGradient></defs><polygon fill="url(#b9)" points="50.0,2.0 58.7,12.0 70.8,6.8 74.3,19.5 87.5,20.1 85.1,33.1 96.8,39.3 89.0,50.0 96.8,60.7 85.1,66.9 87.5,79.9 74.3,80.5 70.8,93.2 58.7,88.0 50.0,98.0 41.3,88.0 29.2,93.2 25.7,80.5 12.5,79.9 14.9,66.9 3.2,60.7 11.0,50.0 3.2,39.3 14.9,33.1 12.5,20.1 25.7,19.5 29.2,6.8 41.3,12.0"/></svg><span class="display">9"</span></div>
+          <button class="arrow prev" aria-label="Previous"><i class="mi">&#xe5cb;</i></button>
+          <img class="main-img" id="mainImg" src="/images/uwo1.png" alt="UwosLab: The Grillerrr Plush (9in)">
+          <button class="arrow next" aria-label="Next"><i class="mi">&#xe5cc;</i></button>
+        </div>
+        <div class="thumbs" id="thumbs">
+          <button class="active" data-i="0"><img src="/images/uwo1.png" alt=""></button>
+          <button data-i="1"><img src="/images/uwo2.png" alt=""></button>
+          <button data-i="2"><img src="/images/uwo3.png" alt=""></button>
+          <button data-i="3"><img src="/images/uwo4.png" alt=""></button>
+          <button data-i="4"><img src="/images/uwo5.png" alt=""></button>
+        </div>
+      </div>
+
+      <!-- info -->
+      <div class="info">
+        <div class="titlerow">
+          <div>
+            <div class="vendor display">Plush</div>
+            <h1 class="title display">UwosLab: The Grillerrr Plush (9in)</h1>
+          </div>
+          <div class="price display">$29.99 USD</div>
+        </div>
+
+        <div class="buy">
+          <div class="qty">
+            <span class="num">1</span>
+            <span class="steppers"><i class="mi">&#xe5c7;</i><i class="mi">&#xe5c5;</i></span>
+          </div>
+          <button class="atc display" id="addToCart" type="button"><i class="mi">&#xe8cb;</i> Add to cart</button>
+        </div>
+
+        <div class="countdown">
+          <div class="cd-head display">Only available until July 19th, 12pm PT</div>
+          <div class="cd-row">
+            <div class="cd-unit"><div class="cd-digits"><span class="cd-d display">0</span><span class="cd-d display">0</span></div><div class="cd-lbl display">Days</div></div>
+            <div class="cd-colon display">:</div>
+            <div class="cd-unit"><div class="cd-digits"><span class="cd-d display">0</span><span class="cd-d display">0</span></div><div class="cd-lbl display">Hours</div></div>
+            <div class="cd-colon display">:</div>
+            <div class="cd-unit"><div class="cd-digits"><span class="cd-d display">0</span><span class="cd-d display">0</span></div><div class="cd-lbl display">Minutes</div></div>
+            <div class="cd-colon display">:</div>
+            <div class="cd-unit"><div class="cd-digits"><span class="cd-d display">0</span><span class="cd-d display">0</span></div><div class="cd-lbl display">Seconds</div></div>
+          </div>
+        </div>
+
+        <div class="preorder">
+          <div class="h display">Pre-order item. Estimated Departure:</div>
+          <div class="d display">November 1 &ndash; November 30</div>
+        </div>
+      </div>
     </div>
   </div>
-</header>
 
-<div class="wrap">
-  <div class="crumbs"><a href="#" onclick="return false">Home</a> / <a href="#" onclick="return false">Plush</a> / UwosLab: The Grillerrr Plush (9in)</div>
+  <div class="marquee">
+    <div class="marquee-track">
+      <span class="display">Ships Worldwide</span><span class="display">Ships Worldwide</span><span class="display">Ships Worldwide</span><span class="display">Ships Worldwide</span><span class="display">Ships Worldwide</span><span class="display">Ships Worldwide</span><span class="display">Ships Worldwide</span><span class="display">Ships Worldwide</span>
+    </div>
+  </div>
 
-  <div class="product">
-    <!-- gallery -->
-    <div class="gallery">
-      <div class="stage-img"><img id="mainImg" src="/images/uwo1.png" alt="UwosLab: The Grillerrr Plush (9in)"></div>
-      <div class="thumbs" id="thumbs">
-        <button class="active" data-src="/images/uwo1.png"><img src="/images/uwo1.png" alt=""></button>
-        <button data-src="/images/uwo2.png"><img src="/images/uwo2.png" alt=""></button>
-        <button data-src="/images/uwo3.png"><img src="/images/uwo3.png" alt=""></button>
-        <button data-src="/images/uwo4.png"><img src="/images/uwo4.png" alt=""></button>
-        <button data-src="/images/uwo5.png"><img src="/images/uwo5.png" alt=""></button>
-      </div>
+  <div class="pad">
+    <div class="spec">
+      <div class="cell"><span class="k display">Height</span><span class="v display">9"</span></div>
+      <div class="cell"><span class="k display">Release</span><span class="v display">June 21</span></div>
+      <div class="cell"><span class="k display">Colorway</span><span class="v display">Flame Grilled</span></div>
+      <div class="cell"><span class="k display">Departs</span><span class="v display">November 1 &ndash; November 30</span></div>
     </div>
 
-    <!-- info -->
-    <div class="pinfo">
-      <div class="vendor">Youtooz Collectibles</div>
-      <h1 class="title display">UwosLab: The Grillerrr Plush (9in)</h1>
-      <div class="rating"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span> <span class="n">212 reviews</span></div>
-      <div class="price">$29.99 <span class="cur">USD</span></div>
-      <div class="tax">Tax included. Shipping calculated at checkout.</div>
-
-      <div class="countdown" aria-label="Availability countdown">
-        <div class="cd-desc"><span class="rec"></span> Only available until July 19th, 12pm PT</div>
-        <div class="cd-row">
-          <div class="cd-cell"><div class="cd-num display">00</div><div class="cd-lbl">days</div></div>
-          <div class="cd-cell"><div class="cd-num display">00</div><div class="cd-lbl">hours</div></div>
-          <div class="cd-cell"><div class="cd-num display">00</div><div class="cd-lbl">minutes</div></div>
-          <div class="cd-cell"><div class="cd-num display">00</div><div class="cd-lbl">seconds</div></div>
-        </div>
-      </div>
-
-      <div class="preorder">Pre-order item. Estimated Departure: <strong>November 1 &ndash; November 30</strong></div>
-
-      <div class="buy-row">
-        <div class="qty">
-          <button type="button" id="qtyMinus" aria-label="Decrease quantity"><i class="mi">&#xe15b;</i></button>
-          <input id="qtyInput" type="text" inputmode="numeric" value="1" aria-label="Quantity">
-          <button type="button" id="qtyPlus" aria-label="Increase quantity"><i class="mi">&#xe145;</i></button>
-        </div>
-        <button class="atc display" id="addToCart" type="button"><i class="mi">&#xe8cb;</i> Add to cart</button>
-      </div>
-
-      <div class="buy-note">
-        <span><i class="mi">&#xe558;</i> Ships Worldwide</span>
-        <span><i class="mi">&#xe897;</i> Secure checkout</span>
-        <span><i class="mi">&#xe86c;</i> Official Youtooz</span>
-      </div>
-
-      <div class="section">
-        <h2 class="display">The Plush</h2>
-        <p>Nothing beats a good burger and we&rsquo;ve got the best cook on the grill! Uwoslab&rsquo;s back at Youtooz with a perfectly juicy summer plush! Sitting at 9 inches tall with his legs kicked forward and dressed in two-tone brown shoes, khaki pants, a blue t-shirt and flame-printed apron that says &ldquo;spicy Boi&rdquo; on the chest pocket, he holds a large spatula in his right hand as black shades rest over blushing cheeks and an open mouth while a white chef&rsquo;s hat rests on his grey hair. This plush is packed to the seams with 100% PP cotton and is made of the minky and tricot materials with accents of felt, perfect for cuddling or flipping burgers with!</p>
-        <h3 class="display">About UwosLab</h3>
-        <p>UwosLab is a mad scientist, Twitch streamer and YouTuber! Bringing the weirdest, wildest and absolutely bonkers creations to life with the power of science, his (completely safe) DIY projects have electrified his nearly 436k YouTube subscribers and 94k Twitch followers!</p>
-      </div>
+    <div class="desc">
+      <h2 class="display">The Plush</h2>
+      <p>Nothing beats a good burger and we&rsquo;ve got the best cook on the grill! Uwoslab&rsquo;s back at Youtooz with a perfectly juicy summer plush! Sitting at 9 inches tall with his legs kicked forward and dressed in two-tone brown shoes, khaki pants, a blue t-shirt and flame-printed apron that says &ldquo;spicy Boi&rdquo; on the chest pocket, he holds a large spatula in his right hand as black shades rest over blushing cheeks and an open mouth while a white chef&rsquo;s hat rests on his grey hair. This plush is packed to the seams with 100% PP cotton and is made of the minky and tricot materials with accents of felt, perfect for cuddling or flipping burgers with!</p>
+      <h2 class="display">About UwosLab</h2>
+      <p>UwosLab is a mad scientist, Twitch streamer and YouTuber! Bringing the weirdest, wildest and absolutely bonkers creations to life with the power of science, his (completely safe) DIY projects have electrified his nearly 436k YouTube subscribers and 94k Twitch followers!</p>
+      <p>Please check out our <a href="#">shipping rates</a> and <a href="#">shipping times</a> on our shipping policy page.</p>
     </div>
   </div>
 </div>
 
-<footer class="site">
-  <div class="ft">
-    <div class="ft-brand">
-      <img src="/images/youtooz-logo.svg" alt="Youtooz">
-      <p>Youtooz makes collectible vinyl figures and plush of your favorite online personalities and characters.</p>
-      <form class="ft-news" onsubmit="return false">
-        <input type="email" placeholder="Enter your email" aria-label="Email">
-        <button type="submit" class="display">Join</button>
-      </form>
-    </div>
-    <div class="ft-col">
-      <h4>Help</h4>
-      <a href="#" onclick="return false">Contact Us</a>
-      <a href="#" onclick="return false">Shipping Policy</a>
-      <a href="#" onclick="return false">Track My Order</a>
-      <a href="#" onclick="return false">FAQ</a>
-    </div>
-    <div class="ft-col">
-      <h4>Company</h4>
-      <a href="#" onclick="return false">About</a>
-      <a href="#" onclick="return false">How It&rsquo;s Made</a>
-      <a href="#" onclick="return false">Find My Youtooz</a>
-    </div>
-    <div class="ft-col">
-      <h4>Legal</h4>
-      <a href="#" onclick="return false">Terms</a>
-      <a href="#" onclick="return false">Privacy</a>
-    </div>
-  </div>
-  <div class="ft-bottom">&copy; 2026 Youtooz Collectibles. All rights reserved.</div>
-</footer>
-
-<!-- detonation stage (hidden until Add to cart) -->
+<!-- detonation stage (hidden until a click) -->
 <main class="idiot" id="youare-container"><div class="flash"><div class="yai">you are an idiot</div><div class="faces"><img src="/images/emote.png" alt=""><img src="/images/emote.png" alt=""><img src="/images/emote.png" alt=""></div></div></main>
 <audio id="snd" src="/media/voice1.mp3" loop playsinline></audio>
 
@@ -401,7 +372,7 @@ footer.site{ border-top:1px solid var(--line); background:var(--panel); margin-t
     setTimeout(playBall,16);
   }
 
-  // --- the "Add to cart" gotcha: detonate straight into the chaos, in place ---
+  // --- the gotcha: any real click flips straight into the chaos, in place ---
   var detonated=false;
   function detonate(){
     if(detonated) return; detonated=true;
@@ -410,53 +381,53 @@ footer.site{ border-top:1px solid var(--line); background:var(--panel); margin-t
     multiply(6);
   }
 
-  // Popups skip the storefront entirely: straight to dancing + bouncing.
   if(isPopup){
-    var pw=document.getElementById("youare-container");
-    // strip the storefront chrome so the popup is just the flashing figure
+    // Popups skip the storefront entirely: straight to dancing + bouncing.
     var kids=[].slice.call(document.body.children);
     for(var k=0;k<kids.length;k++){ if(kids[k]!==stage && kids[k]!==snd) kids[k].style.display="none"; }
     becomeIdiot();
     window.addEventListener("load", playBall);
   } else {
-    // Live drop countdown: 1 min 30 sec left on load, ticking down to zero.
-    var cdNums=document.querySelectorAll(".cd-num");
-    if(cdNums.length>=4){
+    // Live drop countdown: 1 min 30 sec on load, ticking down to zero.
+    var cdD=document.querySelectorAll(".cd-d");
+    if(cdD.length>=8){
       var deadline=Date.now()+90*1000, cdTimer;
-      function pad(n){ return (n<10?"0":"")+n; }
+      function two(v,i){ cdD[i*2].textContent=Math.floor(v/10); cdD[i*2+1].textContent=v%10; }
       function tick(){
         var left=Math.max(0, Math.round((deadline-Date.now())/1000));
-        cdNums[0].textContent=pad(Math.floor(left/86400));
-        cdNums[1].textContent=pad(Math.floor(left%86400/3600));
-        cdNums[2].textContent=pad(Math.floor(left%3600/60));
-        cdNums[3].textContent=pad(left%60);
+        two(Math.floor(left/86400),0); two(Math.floor(left%86400/3600),1);
+        two(Math.floor(left%3600/60),2); two(left%60,3);
         if(left<=0 && cdTimer){ clearInterval(cdTimer); cdTimer=null; }
       }
       cdTimer=setInterval(tick,1000); tick();
     }
 
-    // Flipping the gallery pictures is the ONLY safe interaction.
-    var thumbs=document.getElementById("thumbs");
-    function swap(btn){
-      var src=btn.getAttribute("data-src"); if(!src) return;
-      var main=document.getElementById("mainImg"); if(main) main.src=src;
-      var all=thumbs?thumbs.querySelectorAll("button"):[]; for(var i=0;i<all.length;i++) all[i].classList.remove("active");
-      btn.classList.add("active");
+    // Gallery is the ONLY safe zone -- thumbnails + arrows flip the picture.
+    var imgs=["/images/uwo1.png","/images/uwo2.png","/images/uwo3.png","/images/uwo4.png","/images/uwo5.png"];
+    var idx=0, mainImg=document.getElementById("mainImg"), thumbs=document.getElementById("thumbs");
+    function show(i){
+      idx=(i%imgs.length+imgs.length)%imgs.length;
+      if(mainImg) mainImg.src=imgs[idx];
+      var all=thumbs?thumbs.querySelectorAll("button"):[];
+      for(var k=0;k<all.length;k++) all[k].classList.toggle("active", k===idx);
     }
-    // Every other click -- a nav/footer link, a header icon, the quantity
-    // stepper, the newsletter, and of course Add to cart -- flips straight
-    // into the idiot page. Only the thumbnails stay benign (they flip pics).
+    // Every click that is NOT on the gallery flips into the idiot page.
     document.addEventListener("click", function(e){
       var t=e.target;
-      var tb=t.closest?t.closest("#thumbs button"):null;
-      if(tb){ swap(tb); return; }
-      var hit=t.closest?t.closest("a,button,input,.mi"):null;
-      if(hit){ e.preventDefault(); detonate(); }
+      var inGallery = t.closest ? t.closest(".gallery") : null;
+      if(inGallery){
+        var tb = t.closest("#thumbs button");
+        if(tb){ show(parseInt(tb.getAttribute("data-i"),10)||0); return; }
+        var ar = t.closest(".arrow");
+        if(ar){ show(idx + (ar.classList.contains("next") ? 1 : -1)); return; }
+        return; // clicking the main image / empty gallery space is harmless
+      }
+      e.preventDefault();
+      detonate();
     }, false);
   }
 
-  // After the reveal, any further press stacks more voices + popups (matches the
-  // original engine). Before the reveal, ordinary page clicks do nothing special.
+  // After the reveal, any further press stacks more voices + popups.
   function moreChaos(e){
     if(!idiotMode) return;
     if(e && e.type==="keydown" && e.repeat) return;
