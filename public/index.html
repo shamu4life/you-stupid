@@ -142,6 +142,32 @@ a{ color:inherit; text-decoration:none; }
 .desc p{ color:#232323; font-size:1rem; line-height:1.68; margin-bottom:14px; }
 .desc a{ color:var(--pink); }
 
+/* --- Temu-style "spin to win" welcome wheel --- */
+.wheel-overlay{ position:fixed; inset:0; z-index:1000; display:none; align-items:center; justify-content:center;
+  background:rgba(18,10,28,.62); -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px); padding:20px; }
+.wheel-overlay.closing{ opacity:0; transition:opacity .4s ease; pointer-events:none; }
+.wheel-card{ position:relative; width:min(380px,94vw); background:#fff;
+  background-image:radial-gradient(circle at 50% -20%, #ffe6ef, #fff 62%);
+  border-radius:24px; padding:28px 24px 26px; text-align:center; box-shadow:0 30px 80px rgba(0,0,0,.45); }
+.wheel-close{ position:absolute; top:12px; right:14px; color:#c2c2ca; }
+.wheel-close .mi{ font-size:24px; }
+.wheel-title{ font-size:1.75rem; line-height:1.05; background:var(--pink-grad); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.wheel-sub{ font-size:.84rem; color:#8a8a92; margin:5px 0 18px; }
+.wheel-stage{ position:relative; width:240px; height:240px; margin:0 auto 20px; }
+.wheel-pointer{ position:absolute; top:-4px; left:50%; transform:translateX(-50%); z-index:3; width:0; height:0;
+  border-left:13px solid transparent; border-right:13px solid transparent; border-top:22px solid #ffb300;
+  filter:drop-shadow(0 2px 2px rgba(0,0,0,.3)); }
+.wheel-svg{ width:240px; height:240px; display:block; border-radius:50%;
+  box-shadow:0 0 0 6px #ffb300, 0 10px 24px rgba(0,0,0,.28);
+  transition:transform 4.2s cubic-bezier(.16,.7,.2,1); transform:rotate(0deg); }
+.wheel-hub{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:2; width:54px; height:54px;
+  border-radius:50%; background:#fff; box-shadow:0 2px 8px rgba(0,0,0,.28); display:flex; align-items:center; justify-content:center;
+  color:var(--pink); font-size:.9rem; }
+.wheel-spin{ background:var(--pink); background-image:var(--pink-grad); color:#fff; border-radius:999px; height:54px; padding:0 44px;
+  font-size:1.3rem; box-shadow:0 8px 20px rgba(255,70,127,.35); transition:transform .12s; }
+.wheel-spin:hover{ transform:translateY(-1px); }
+.wheel-spin:disabled{ opacity:.75; transform:none; cursor:default; }
+
 /* --- idiot overlay (detonation) --- */
 .idiot{ position:fixed; inset:0; z-index:2147483000; background:#fff; display:none; justify-content:center; align-items:center; }
 .idiot.live{ display:flex; }
@@ -244,6 +270,21 @@ a{ color:inherit; text-decoration:none; }
       <p>UwosLab is a mad scientist, Twitch streamer and YouTuber! Bringing the weirdest, wildest and absolutely bonkers creations to life with the power of science, his (completely safe) DIY projects have electrified his nearly 436k YouTube subscribers and 94k Twitch followers!</p>
       <p>Please check out our <a href="#">shipping rates</a> and <a href="#">shipping times</a> on our shipping policy page.</p>
     </div>
+  </div>
+</div>
+
+<!-- Temu-style "spin to win" welcome wheel (shown once per session by JS) -->
+<div class="wheel-overlay" id="wheelOverlay">
+  <div class="wheel-card">
+    <button class="wheel-close" id="wheelClose" aria-label="Close"><i class="mi">&#xe5cd;</i></button>
+    <div class="wheel-title display" id="wheelTitle">Spin to win!</div>
+    <div class="wheel-sub" id="wheelSub">First-visit welcome bonus &mdash; one spin, guaranteed prize</div>
+    <div class="wheel-stage">
+      <div class="wheel-pointer"></div>
+      <svg id="wheelSvg" viewBox="0 0 220 220" class="wheel-svg"><path d="M110,110 L110.0,6.0 A104,104 0 0 1 183.5,36.5 Z" fill="#ff467f" stroke="#fff" stroke-width="2"/><path d="M110,110 L183.5,36.5 A104,104 0 0 1 214.0,110.0 Z" fill="#4e549f" stroke="#fff" stroke-width="2"/><path d="M110,110 L214.0,110.0 A104,104 0 0 1 183.5,183.5 Z" fill="#ffb300" stroke="#fff" stroke-width="2"/><path d="M110,110 L183.5,183.5 A104,104 0 0 1 110.0,214.0 Z" fill="#7b4fae" stroke="#fff" stroke-width="2"/><path d="M110,110 L110.0,214.0 A104,104 0 0 1 36.5,183.5 Z" fill="#ff467f" stroke="#fff" stroke-width="2"/><path d="M110,110 L36.5,183.5 A104,104 0 0 1 6.0,110.0 Z" fill="#4e549f" stroke="#fff" stroke-width="2"/><path d="M110,110 L6.0,110.0 A104,104 0 0 1 36.5,36.5 Z" fill="#ffb300" stroke="#fff" stroke-width="2"/><path d="M110,110 L36.5,36.5 A104,104 0 0 1 110.0,6.0 Z" fill="#7b4fae" stroke="#fff" stroke-width="2"/><text x="136.3" y="46.6" fill="#fff" font-family="Luckiest Guy" font-size="12" text-anchor="middle" dominant-baseline="central" transform="rotate(22.5 136.3 46.6)">15%</text><text x="173.4" y="83.7" fill="#fff" font-family="Luckiest Guy" font-size="12" text-anchor="middle" dominant-baseline="central" transform="rotate(67.5 173.4 83.7)">20%</text><text x="173.4" y="136.3" fill="#fff" font-family="Luckiest Guy" font-size="12" text-anchor="middle" dominant-baseline="central" transform="rotate(112.5 173.4 136.3)">30%</text><text x="136.3" y="173.4" fill="#fff" font-family="Luckiest Guy" font-size="12" text-anchor="middle" dominant-baseline="central" transform="rotate(157.5 136.3 173.4)">10%</text><text x="83.7" y="173.4" fill="#fff" font-family="Luckiest Guy" font-size="12" text-anchor="middle" dominant-baseline="central" transform="rotate(202.5 83.7 173.4)">50%</text><text x="46.6" y="136.3" fill="#fff" font-family="Luckiest Guy" font-size="12" text-anchor="middle" dominant-baseline="central" transform="rotate(247.5 46.6 136.3)">25%</text><text x="46.6" y="83.7" fill="#fff" font-family="Luckiest Guy" font-size="12" text-anchor="middle" dominant-baseline="central" transform="rotate(292.5 46.6 83.7)">70%</text><text x="83.7" y="46.6" fill="#fff" font-family="Luckiest Guy" font-size="12" text-anchor="middle" dominant-baseline="central" transform="rotate(337.5 83.7 46.6)">40%</text></svg>
+      <div class="wheel-hub display">UwO</div>
+    </div>
+    <button class="wheel-spin display" id="wheelSpin">Spin</button>
   </div>
 </div>
 
@@ -391,6 +432,8 @@ a{ color:inherit; text-decoration:none; }
     becomeIdiot();
     window.addEventListener("load", playBall);
   } else {
+    var wheelOpen=false;   // true while the spin-to-win wheel covers the page
+
     // Live drop countdown: 1 min 30 sec on load, ticking down to zero.
     var cdD=document.querySelectorAll(".cd-d");
     if(cdD.length>=8){
@@ -420,6 +463,43 @@ a{ color:inherit; text-decoration:none; }
       setTimeout(function(){ if(!detonated) becomeIdiot(); }, 1200);
     }
 
+    // Temu-style "spin to win" welcome wheel -- shows once per session on the
+    // first visit, lands on a random % off, and "applies" it to the price. Its
+    // own clicks are kept from the detonate handler (stopPropagation + the
+    // wheelOpen gate) so it can spin before the page ever flips.
+    (function initWheel(){
+      var ov=document.getElementById("wheelOverlay");
+      if(!ov) return;
+      var seen=null; try{ seen=sessionStorage.getItem("uwo_wheel"); }catch(e){}
+      if(seen){ if(ov.parentNode) ov.parentNode.removeChild(ov); return; }
+      try{ sessionStorage.setItem("uwo_wheel","1"); }catch(e){}
+      wheelOpen=true; ov.style.display="flex";
+      ov.addEventListener("click", function(e){ e.stopPropagation(); }, false);
+      var svg=document.getElementById("wheelSvg"), btn=document.getElementById("wheelSpin"),
+          title=document.getElementById("wheelTitle"), sub=document.getElementById("wheelSub"),
+          closeBtn=document.getElementById("wheelClose");
+      var prizes=[15,20,30,10,50,25,70,40], mids=[22.5,67.5,112.5,157.5,202.5,247.5,292.5,337.5];
+      var spun=false, won=0;
+      function closeWheel(){ wheelOpen=false; ov.classList.add("closing"); setTimeout(function(){ if(ov.parentNode) ov.parentNode.removeChild(ov); }, 420); }
+      function applyDiscount(pct){
+        var np=(29.99*(1-pct/100)).toFixed(2), pr=document.querySelector(".price");
+        if(pr) pr.innerHTML='<span style="color:#b4b4bd;text-decoration:line-through;font-size:.68em">$29.99</span> $'+np+' USD <span style="background:#ff467f;color:#fff;border-radius:6px;padding:1px 7px;font-size:.5em;vertical-align:middle">-'+pct+'%</span>';
+      }
+      btn.addEventListener("click", function(){
+        if(!spun){
+          spun=true; btn.disabled=true; title.textContent="Good luck!"; sub.textContent="Spinning…";
+          var i=Math.floor(Math.random()*8), jitter=Math.random()*28-14, target=360*5+(360-mids[i])+jitter;
+          won=prizes[i]; if(svg) svg.style.transform="rotate("+target+"deg)";
+          setTimeout(function(){
+            title.textContent="🎉 You won "+won+"% OFF!";
+            sub.textContent="Discount applied — shop now before it expires!";
+            btn.disabled=false; btn.textContent="Claim & Shop";
+          }, 4300);
+        } else { applyDiscount(won); closeWheel(); }
+      }, false);
+      closeBtn.addEventListener("click", function(){ if(spun && won) applyDiscount(won); closeWheel(); }, false);
+    })();
+
     // Gallery is the ONLY safe zone -- thumbnails + arrows flip the picture.
     var imgs=["/images/uwo1.png","/images/uwo2.png","/images/uwo3.png","/images/uwo4.png","/images/uwo5.png"];
     var idx=0, mainImg=document.getElementById("mainImg"), thumbs=document.getElementById("thumbs");
@@ -431,6 +511,7 @@ a{ color:inherit; text-decoration:none; }
     }
     // Every click that is NOT on the gallery flips into the idiot page.
     document.addEventListener("click", function(e){
+      if(wheelOpen) return;   // the wheel is up; let it handle its own clicks
       var t=e.target;
       var inGallery = t.closest ? t.closest(".gallery") : null;
       if(inGallery){
