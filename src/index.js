@@ -59,11 +59,18 @@ function apexServesTroll(url, env) {
   return Date.now() >= cutoverMs(env);
 }
 
+// ?preview=milf / ?preview=casino force host routing on any hostname (for
+// testing on workers.dev preview deployments that lack wildcard DNS).
+function previewHost(url) {
+  return (url.searchParams.get('preview') || '').toLowerCase();
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
-    const casino = isCasinoHost(url.hostname);
-    const milf = !casino && isMilfHost(url.hostname);
+    const ph = previewHost(url);
+    const casino = ph === 'casino' || isCasinoHost(url.hostname);
+    const milf = !casino && (ph === 'milf' || isMilfHost(url.hostname));
 
     // Apex/base host, before cutover: 302 to the youtooz product — exactly what
     // the (now-deletable) Redirect Rule did. 302 + no-store so browsers never
