@@ -14,8 +14,14 @@ run_worker_first = true
 [observability]
 enabled = true
 
-# Optional: serve it from your own domain instead of *.workers.dev.
-# Add the zone in the Cloudflare dashboard first, then uncomment:
-# routes = [
-#   { pattern = "youareanidiot.example.com", custom_domain = true }
-# ]
+[[routes]]
+pattern = "uwutoowo.com"
+custom_domain = true
+
+[[routes]]
+pattern = "casino.uwutoowo.com"
+custom_domain = true
+
+[[routes]]
+pattern = "sorryifuckedyour.mom"
+custom_domain = true

@@ -70,7 +70,7 @@ Cloudflare Git integration builds `main` on push. Manual deploy: `npm run deploy
 
 ## Domains
 
-The apex (`uwutoowo.com`), the `casino.` subdomain, and `sorryifuckedyour.mom` are all Worker routes/custom domains (managed in the dashboard; `wrangler.toml` `routes` stays commented out). The Worker handles the apex's pre-cutover redirect itself, so **no standalone Cloudflare Redirect Rule is needed** — deleting it hands the apex fully to the Worker. Re-adding such a rule is the instant rollback (rules run before Workers).
+The apex (`uwutoowo.com`), the `casino.` subdomain, and `sorryifuckedyour.mom` are all Worker custom domains declared in `wrangler.toml` (`[[routes]]` with `custom_domain = true`). Wrangler applies them on every deploy, so route config lives in code and survives dashboard resets. The Worker handles the apex's pre-cutover redirect itself, so **no standalone Cloudflare Redirect Rule is needed** — deleting it hands the apex fully to the Worker. Re-adding such a rule is the instant rollback (rules run before Workers).
 
 To test the milf host locally or on `*.workers.dev`, use the `milf.` subdomain prefix (e.g. `milf.you-stupid.workers.dev`) — the Worker checks for that label as a testing alias.
 
