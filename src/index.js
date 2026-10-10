@@ -55,6 +55,9 @@ function isSinglesHost(hostname) {
     h.split('.')[0] === 'singles';   // singles.you-stupid.workers.dev for testing
 }
 
+// Lips mark, same as the MatureMingle logo.
+const MILF_FAVICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#A855F7"/><stop offset=".55" stop-color="#EC4899"/><stop offset="1" stop-color="#F43F5E"/></linearGradient></defs><path fill="url(#g)" d="M3 16C6 12.2 8.6 9.6 11 9.6c2 0 3.6 1.4 5 2.2 1.4-.8 3-2.2 5-2.2 2.4 0 5 2.6 8 6.4-4.5-.4-8.5.6-13 .6S7.5 15.6 3 16z"/><path fill="url(#g)" d="M3 16.9c4.5-.2 8.5 1 13 1s8.5-1.2 13-1c-2.5 5-7.4 8-13 8S5.5 21.9 3 16.9z"/></svg>`;
+
 // Heart-in-a-map-pin mark, same as the singles page logo.
 const SINGLES_FAVICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF2D55"/><stop offset="1" stop-color="#FF7A3D"/></linearGradient></defs><path fill="url(#g)" d="M16 1.6c-6.3 0-11.4 5-11.4 11.2 0 8.2 11.4 17.6 11.4 17.6s11.4-9.4 11.4-17.6C27.4 6.6 22.3 1.6 16 1.6z"/><path fill="#fff" transform="translate(10 6.9) scale(.5)" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
 
@@ -120,18 +123,11 @@ export default {
     // Default /favicon.ico is the "uwoChud" emote — which leaks the gag in the
     // browser tab before anyone even clicks. Serve a host-appropriate icon
     // instead: the youtooz logo on the clone, the FBI seal on the seizure page,
-    // a kiss-mark SVG on the milf page, the heart-pin on the singles page.
+    // the lips mark on the milf page, the heart-pin on the singles page.
     // (Detonation swaps to the emote via JS.)
     if (url.pathname === '/favicon.ico') {
-      if (singles) {
-        return new Response(SINGLES_FAVICON, {
-          headers: { 'content-type': 'image/svg+xml', 'cache-control': 'public, max-age=3600' },
-        });
-      }
-      if (milf) {
-        // Inline SVG kiss-mark emoji favicon for the dating site
-        const kissSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">💋</text></svg>`;
-        return new Response(kissSvg, {
+      if (milf || singles) {
+        return new Response(milf ? MILF_FAVICON : SINGLES_FAVICON, {
           headers: { 'content-type': 'image/svg+xml', 'cache-control': 'public, max-age=3600' },
         });
       }

@@ -45,26 +45,25 @@ a{color:inherit;text-decoration:none;}
 .ic{width:1em;height:1em;fill:currentColor;flex:none;}
 .wrap{max-width:1180px;margin:0 auto;padding:0 20px;}
 
-/* --- blurred "photos": a soft head-and-shoulders blob per palette --- */
-.blob{background:
-  radial-gradient(ellipse 21% 17% at 50% 40%,var(--sk) 0 60%,transparent 100%),
-  radial-gradient(ellipse 30% 26% at 50% 32%,var(--hr) 0 60%,transparent 100%),
-  radial-gradient(ellipse 52% 34% at 50% 104%,var(--sh) 0 64%,transparent 100%),
-  linear-gradient(160deg,var(--b1),var(--b2));}
-.p1{--sk:#F1C6A8;--hr:#6B3E26;--sh:#E8436E;--b1:#FFE0E6;--b2:#F7A1B5;}
-.p2{--sk:#8D5A3B;--hr:#1E1412;--sh:#2F4B7C;--b1:#CFE3F5;--b2:#8FB5DA;}
-.p3{--sk:#E5B48F;--hr:#2B1A12;--sh:#F5C542;--b1:#FFF1C9;--b2:#F7C873;}
-.p4{--sk:#F2CDB0;--hr:#B7894F;--sh:#3A3A46;--b1:#DDE6EE;--b2:#A9B8C8;}
-.p5{--sk:#6E4430;--hr:#120C0A;--sh:#C2185B;--b1:#F8D3E0;--b2:#D97BA0;}
-.p6{--sk:#D9A988;--hr:#7B4FA8;--sh:#2EB8A6;--b1:#D7F5EF;--b2:#8ED9CB;}
-.p7{--sk:#C68E67;--hr:#1A0F0B;--sh:#E07A2F;--b1:#FFE4CC;--b2:#F5A96B;}
-.p8{--sk:#A86B47;--hr:#241712;--sh:#4C8C4A;--b1:#DFF0D8;--b2:#9CCB93;}
-.p9{--sk:#F6D2BC;--hr:#C8553D;--sh:#6C5CE7;--b1:#E9E4FF;--b2:#B3A7F5;}
-.p10{--sk:#EFC3A0;--hr:#3D2618;--sh:#D35400;--b1:#FDE3D0;--b2:#F0A57A;}
-.p11{--sk:#B97A56;--hr:#2A1A14;--sh:#FF5E78;--b1:#FFE0E8;--b2:#FF9EB1;}
-.p12{--sk:#5C3A27;--hr:#0F0A08;--sh:#E9E9F0;--b1:#E6E2F0;--b2:#A9A2C4;}
+/* --- blurred "photos": tiny pre-blurred AI faces (people who don't exist), blurred again here --- */
+.blob{background:var(--img) center 30%/cover no-repeat,linear-gradient(160deg,var(--b1),var(--b2));}
+.p1{--img:url(/images/people/hs01.jpg);--b1:#FFE0E6;--b2:#F7A1B5;}
+.p2{--img:url(/images/people/hs02.jpg);--b1:#CFE3F5;--b2:#8FB5DA;}
+.p3{--img:url(/images/people/hs03.jpg);--b1:#FFF1C9;--b2:#F7C873;}
+.p4{--img:url(/images/people/hs04.jpg);--b1:#DDE6EE;--b2:#A9B8C8;}
+.p5{--img:url(/images/people/hs05.jpg);--b1:#F8D3E0;--b2:#D97BA0;}
+.p6{--img:url(/images/people/hs06.jpg);--b1:#D7F5EF;--b2:#8ED9CB;}
+.p7{--img:url(/images/people/hs07.jpg);--b1:#FFE4CC;--b2:#F5A96B;}
+.p8{--img:url(/images/people/hs08.jpg);--b1:#DFF0D8;--b2:#9CCB93;}
+.p9{--img:url(/images/people/hs09.jpg);--b1:#E9E4FF;--b2:#B3A7F5;}
+.p10{--img:url(/images/people/hs10.jpg);--b1:#FDE3D0;--b2:#F0A57A;}
+.p11{--img:url(/images/people/hs11.jpg);--b1:#FFE0E8;--b2:#FF9EB1;}
+.p12{--img:url(/images/people/hs12.jpg);--b1:#E6E2F0;--b2:#A9A2C4;}
+.t1{--img:url(/images/people/hst1.jpg);--b1:#F8D3E0;--b2:#D97BA0;}
+.t2{--img:url(/images/people/hst2.jpg);--b1:#E6E2F0;--b2:#A9A2C4;}
+.t3{--img:url(/images/people/hst3.jpg);--b1:#E9E4FF;--b2:#B3A7F5;}
 .av{position:relative;display:block;border-radius:50%;overflow:hidden;flex:none;}
-.av>.blob{position:absolute;inset:-4px;filter:blur(2px);}
+.av>.blob{position:absolute;inset:-3px;filter:blur(1.5px);}
 .avw{position:relative;display:inline-block;flex:none;}
 .avw .pip{position:absolute;right:0;bottom:0;width:12px;height:12px;border-radius:50%;background:var(--green);border:2px solid #fff;}
 
@@ -184,7 +183,7 @@ a{color:inherit;text-decoration:none;}
 .pcard:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(255,45,85,.16);}
 .pcard.hide{display:none;}
 .ph{position:relative;aspect-ratio:4/5;overflow:hidden;}
-.ph>.blob{position:absolute;inset:-28px;filter:blur(16px) saturate(1.1);}
+.ph>.blob{position:absolute;inset:-28px;filter:blur(15px) saturate(1.1);}
 .ph-shade{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,20,.62) 0%,rgba(10,10,20,0) 46%);}
 .status{position:absolute;top:10px;left:10px;display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.93);
   font-size:.7rem;font-weight:700;padding:4px 9px;border-radius:999px;}
@@ -366,7 +365,7 @@ a{color:inherit;text-decoration:none;}
     <div class="quiz-wrap">
       <div class="chip-float" data-det>
         <span class="avw"><span class="av p3"><i class="blob"></i></span><b class="pip"></b></span>
-        <span><b>Sofia, 24 liked you</b><small><span class="chip-dist">1.2 mi</span> away</small></span>
+        <span><b>Sofia, 25 liked you</b><small><span class="chip-dist">1.2 mi</span> away</small></span>
         <svg class="ic heart"><use href="#i-heart"/></svg>
       </div>
       <div class="quiz" id="quiz">
@@ -461,7 +460,7 @@ a{color:inherit;text-decoration:none;}
         <div class="ph"><i class="blob"></i><div class="ph-shade"></div>
           <span class="status new">New</span><span class="pics"><svg class="ic"><use href="#i-cam"/></svg>8</span>
           <span class="lock"><svg class="ic"><use href="#i-lock"/></svg>Join to unblur</span>
-          <div class="ph-info"><b>Sofia, 24</b><span><svg class="ic"><use href="#i-pin"/></svg><i class="dist">1.2 mi</i> away</span></div>
+          <div class="ph-info"><b>Sofia, 25</b><span><svg class="ic"><use href="#i-pin"/></svg><i class="dist">1.2 mi</i> away</span></div>
         </div>
         <div class="pc-act"><button class="pc-like" aria-label="Like"><svg class="ic"><use href="#i-heart"/></svg></button><button class="pc-chat"><svg class="ic"><use href="#i-chat"/></svg>Say hi</button></div>
       </div>
@@ -515,7 +514,7 @@ a{color:inherit;text-decoration:none;}
         <div class="ph"><i class="blob"></i><div class="ph-shade"></div>
           <span class="status new">New</span><span class="pics"><svg class="ic"><use href="#i-cam"/></svg>9</span>
           <span class="lock"><svg class="ic"><use href="#i-lock"/></svg>Join to unblur</span>
-          <div class="ph-info"><b>Mia, 23</b><span><svg class="ic"><use href="#i-pin"/></svg><i class="dist">4.0 mi</i> away</span></div>
+          <div class="ph-info"><b>Mia, 28</b><span><svg class="ic"><use href="#i-pin"/></svg><i class="dist">4.0 mi</i> away</span></div>
         </div>
         <div class="pc-act"><button class="pc-like" aria-label="Like"><svg class="ic"><use href="#i-heart"/></svg></button><button class="pc-chat"><svg class="ic"><use href="#i-chat"/></svg>Say hi</button></div>
       </div>
@@ -581,11 +580,11 @@ a{color:inherit;text-decoration:none;}
     <p class="sub">What members say after their first week.</p>
     <div class="qgrid">
       <div class="q"><div class="stars">★★★★★</div><p>"Matched with someone who lives two streets over. Eight months later we're still arguing about whose place is closer."</p>
-        <div class="who"><span class="av p5"><i class="blob"></i></span><span><b>Dani &amp; Chris</b>Matched in 2025</span></div></div>
+        <div class="who"><span class="av t1"><i class="blob"></i></span><span><b>Dani &amp; Chris</b>Matched in 2025</span></div></div>
       <div class="q"><div class="stars">★★★★★</div><p>"I deleted every other app. Everyone here is actually nearby, and people actually reply."</p>
-        <div class="who"><span class="av p12"><i class="blob"></i></span><span><b>Jamal, 31</b>Atlanta, GA</span></div></div>
+        <div class="who"><span class="av t2"><i class="blob"></i></span><span><b>Jamal, 31</b>Atlanta, GA</span></div></div>
       <div class="q"><div class="stars">★★★★★</div><p>"I was skeptical. Met him for coffee the same night, and now we share a dog."</p>
-        <div class="who"><span class="av p9"><i class="blob"></i></span><span><b>Elena, 28</b>Seattle, WA</span></div></div>
+        <div class="who"><span class="av t3"><i class="blob"></i></span><span><b>Elena, 34</b>Seattle, WA</span></div></div>
     </div>
   </div>
 </section>
@@ -830,7 +829,7 @@ a{color:inherit;text-decoration:none;}
     var MSGS=[
       {g:"w", n:"Kayla, 26",  p:"p1", m:"hey… you're really close by. you around tonight?"},
       {g:"m", n:"Marcus, 29", p:"p2", m:"saw you pop up nearby. drinks this week?"},
-      {g:"w", n:"Sofia, 24",  p:"p3", m:"ok you're like 5 minutes from me lol. hi"},
+      {g:"w", n:"Sofia, 25",  p:"p3", m:"ok you're like 5 minutes from me lol. hi"},
       {g:"x", n:"River, 26",  p:"p6", m:"hiii, you seem fun. what are you up to tonight?"},
       {g:"m", n:"Devin, 32",  p:"p8", m:"wait, do I know you? you look really familiar"},
       {g:"w", n:"Priya, 27",  p:"p7", m:"finally someone nearby who actually seems normal"}
