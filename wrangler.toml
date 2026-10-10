@@ -25,3 +25,7 @@ custom_domain = true
 [[routes]]
 pattern = "sorryifuckedyour.mom"
 custom_domain = true
+
+[[routes]]
+pattern = "hotsinglesnear.you"
+custom_domain = true
