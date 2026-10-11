@@ -29,3 +29,12 @@ custom_domain = true
 [[routes]]
 pattern = "hotsinglesnear.you"
 custom_domain = true
+
+# The milf and singles hosts double as mbedfx embed domains (post link with
+# the host swapped -> it unfurls as the post). Any path on them that this
+# Worker has no file for is offered to the mbedfx Worker over this binding;
+# only answers mbedfx marks `x-mbedfx-guest: served` are used (see
+# askMbedfx in src/index.js). Same Cloudflare account required.
+[[services]]
+binding = "MBEDFX"
+service = "mbedfx"

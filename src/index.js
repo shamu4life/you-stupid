@@ -23,6 +23,8 @@
 //   * automatic apex cutover — Date.now() vs CUTOVER (drop close + 1s).
 //   * GET /whoami — visitor IP + geo from CF headers (used by multiple pages).
 //   * host routing + unknown-HTML fallback to the host's front door.
+//   * milf + singles hosts double as mbedfx embed domains: a path with no file
+//     here is offered to the mbedfx Worker first (askMbedfx).
 //   * per-host og:/twitter: unfurl-meta absolutization via HTMLRewriter.
 
 const YOUTOOZ_PRODUCT_URL = 'https://youtooz.com/products/uwoslab-the-grillerrr-plush-9-inch';
@@ -74,6 +76,28 @@ function apexServesTroll(url, env) {
   if (p === 'troll') return true;
   if (p === 'redirect') return false;
   return Date.now() >= cutoverMs(env);
+}
+
+// The milf and singles hosts double as mbedfx embed domains: swap x.com for
+// hotsinglesnear.you in a post link and it unfurls as the real post in Discord.
+// A path this Worker has no file for is offered to the mbedfx Worker over the
+// MBEDFX service binding (same request, same hostname). mbedfx marks the answers
+// it owns with `x-mbedfx-guest: served`. Anything unmarked is thrown away and
+// the request carries on exactly as before this existed: that covers mbedfx
+// declining (it does for /, robots.txt, a bare /typo, its API), an error, and
+// an mbedfx deploy that predates guest hosts. So nothing mbedfx does or fails to
+// do can replace a dating page. GET/HEAD only: those are all an unfurl uses,
+// and ASSETS has already been handed the request.
+async function askMbedfx(request, env) {
+  if (!env.MBEDFX || (request.method !== 'GET' && request.method !== 'HEAD')) return null;
+  try {
+    const res = await env.MBEDFX.fetch(request);
+    if (res.headers.get('x-mbedfx-guest') === 'served') return res;
+    if (res.body) await res.body.cancel();
+  } catch {
+    // Binding missing or mbedfx threw: fall through to this Worker's own answer.
+  }
+  return null;
 }
 
 // ?preview=milf / ?preview=singles / ?preview=casino force host routing on any
@@ -152,6 +176,13 @@ export default {
       res = await env.ASSETS.fetch(new URL(frontDoor, request.url));
     } else {
       res = await env.ASSETS.fetch(request);
+    }
+
+    // No file here on a dating host? It may be a post link meant for mbedfx.
+    // Returned as-is: the AbsoluteUrls rewrite below would clobber its og:url.
+    if (res.status === 404 && (milf || singles)) {
+      const embed = await askMbedfx(request, env);
+      if (embed) return embed;
     }
 
     // Unknown route? If a browser is asking for a page, give it this host's front
