@@ -30,6 +30,20 @@ custom_domain = true
 pattern = "hotsinglesnear.you"
 custom_domain = true
 
+# mbedfx's `d.` prefix on the two embed domains: `d.hotsinglesnear.you/{post
+# path}` answers with the post's media file instead of a card, as
+# `d.mbedfx.app` does. isMilfHost/isSinglesHost already match any subdomain, so
+# these get the same front door and the same askMbedfx hand-off; mbedfx tells
+# the two apart by the `d.` in the hostname. Without these the names had no
+# DNS, and mbedfx's converter had to use a `.mp4` path on these hosts instead.
+[[routes]]
+pattern = "d.sorryifuckedyour.mom"
+custom_domain = true
+
+[[routes]]
+pattern = "d.hotsinglesnear.you"
+custom_domain = true
+
 # The milf and singles hosts double as mbedfx embed domains (post link with
 # the host swapped -> it unfurls as the post). Any path on them that this
 # Worker has no file for is offered to the mbedfx Worker over this binding;
